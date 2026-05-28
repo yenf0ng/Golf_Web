@@ -38,7 +38,7 @@ THEMES = {
         "text_muted":  "#5a6e52",   # muted forest green
         "accent":      "#1e6b22",   # fairway green — buttons, values, links
         "accent2":     "#8b6914",   # warm golf gold — secondary highlights
-        "heading":     "#1e4620",   # deepest green for headings
+        "heading":     "#dedede",   # deepest green for headings
         "btn_bg":      "linear-gradient(135deg, #1e6b22, #2d8a30)",
         "btn_color":   "#f0f9ee",   # near-white, readable on green
         "badge_drv":   "#1e4620",   # driver badge text (on accent bg)
@@ -161,7 +161,8 @@ def inject_css(t: dict):
   h1 {{ font-size: 2.6rem !important; color: {t["heading"]} !important; }}
   h2 {{ font-size: 1.9rem !important; color: {t["heading"]} !important; }}
   h3 {{ font-size: 1.4rem !important; color: {t["heading"]} !important; }}
-
+  h4 {{ font-size: 1.2rem !important; color: {t["heading"]} !important; margin-bottom: 1rem; }}
+  
   /* ── Custom cards ── */
   .metric-card {{
     background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
@@ -331,19 +332,31 @@ def inject_css(t: dict):
   }}
   [data-testid="stExpander"] summary p {{ color: {t["text"]} !important; font-weight: 600; }}
 
-  /* ── Dataframe ── */
+/* ── Dataframe (Recent Uploads History) ── */
   [data-testid="stDataFrame"] * {{ color: {t["text"]} !important; }}
   [data-testid="stDataFrame"] th {{
     background: {t["card_border"]} !important; color: {t["text"]} !important;
   }}
+  [data-testid="stDataFrame"] > div > div > div > div {{
+    background-color: {t["card_bg"]} !important; /* Changes the table background */
+  }}
 
-  /* ── Divider ── */
-  hr {{ border-color: {t["hr"]} !important; }}
+  /* ── Radio Buttons (Main Area) ── */
+  [data-testid="stRadio"] [aria-checked="true"] div {{
+    background-color: {t["accent"]} !important;
+    border-color: {t["accent"]} !important;
+  }}
 
-  /* ── Mobile ── */
-  @media (max-width: 640px) {{
-    h1 {{ font-size: 2rem !important; }}
-    .metric-card .value {{ font-size: 1.7rem; }}
+  /* ── File Uploader (Choose File Background) ── */
+  [data-testid="stFileUploaderDropzone"] {{
+    background-color: {t["card_bg"]} !important;
+    border: 2px dashed {t["card_border"]} !important;
+    border-radius: 10px !important;
+  }}
+  [data-testid="stFileUploaderDropzone"] button {{
+    background: {t["btn_bg"]} !important;
+    color: {t["btn_color"]} !important;
+    border: none !important;
   }}
 </style>
 """, unsafe_allow_html=True)
@@ -1245,7 +1258,10 @@ elif page == "Log Session":
 # =============================================================
 elif page == "Upload Media":
     st.markdown("# Upload Swing Media")
-    st.caption("Accepted: MP4, MOV, WEBM (video) | JPG, PNG, WEBP (image) | GIF | Max ~200 MB")
+    st.caption("Upload a file directly OR paste an external link.")
+
+    # Let the user choose the upload method
+    upload_method = st.radio("Upload Method", ["Local File", "External Link"], horizontal=True)
 
     with st.form("upload_form", clear_on_submit=True):
         u_col1, u_col2 = st.columns(2)
@@ -1258,28 +1274,45 @@ elif page == "Upload Media":
                                    placeholder="E.g. Slight pull, good hip rotation...",
                                    height=120, key="u_notes")
 
-        u_file = st.file_uploader(
-            "Choose file",
-            type=["mp4","mov","webm","avi","jpg","jpeg","png","webp","gif"],
-            key="u_file"
-        )
-        upload_btn = st.form_submit_button("Upload to Vault", use_container_width=True)
+        # Show the correct input based on the radio button selection
+        if upload_method == "Local File":
+            u_file = st.file_uploader(
+                "Choose file (Max ~200 MB)",
+                type=["mp4","mov","webm","avi","jpg","jpeg","png","webp","gif"],
+                key="u_file"
+            )
+            u_link = ""
+        else:
+            u_link = st.text_input("External URL", placeholder="https://example.com/my-swing.mp4", key="u_link")
+            u_file = None
+            
+        upload_btn = st.form_submit_button("Save to Vault", use_container_width=True)
 
     if upload_btn:
-        if u_file is None:
-            st.error("Please select a file.")
+        if upload_method == "Local File" and u_file is None:
+            st.error("Please select a file to upload.")
+        elif upload_method == "External Link" and not u_link.strip():
+            st.error("Please paste a valid external link.")
         else:
-            ext       = u_file.name.rsplit(".", 1)[-1].lower()
-            mime_type = MIME_MAP.get(ext, "application/octet-stream")
-            ts        = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-            safe_name = f"{u_cat}/{ts}_{u_file.name.replace(' ','_')}"
-
-            with st.spinner("Uploading to Supabase Storage..."):
+            with st.spinner("Saving to database..."):
                 try:
-                    supabase.storage.from_(BUCKET).upload(
-                        path=safe_name, file=u_file.read(),
-                        file_options={"content-type": mime_type})
-                    pub_url = supabase.storage.from_(BUCKET).get_public_url(safe_name)
+                    if upload_method == "Local File":
+                        # Logic for physical file upload
+                        ext       = u_file.name.rsplit(".", 1)[-1].lower()
+                        mime_type = MIME_MAP.get(ext, "application/octet-stream")
+                        ts        = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+                        safe_name = f"{u_cat}/{ts}_{u_file.name.replace(' ','_')}"
+                        
+                        supabase.storage.from_(BUCKET).upload(
+                            path=safe_name, file=u_file.read(),
+                            file_options={"content-type": mime_type})
+                        pub_url = supabase.storage.from_(BUCKET).get_public_url(safe_name)
+                    else:
+                        # Logic for external link
+                        safe_name = "external_link" # We don't have a storage path for this
+                        pub_url = u_link.strip()
+
+                    # Save to database
                     supabase.table("video_vault").insert({
                         "clip_date"   : str(u_date),
                         "category"    : u_cat,
@@ -1288,11 +1321,12 @@ elif page == "Upload Media":
                         "storage_path": safe_name,
                         "public_url"  : pub_url,
                     }).execute()
+                    
                     invalidate_cache()
-                    st.success(f"Uploaded: {u_file.name}")
-                    st.markdown(f"[View file]({pub_url})")
+                    st.success("Successfully saved!")
+                    st.markdown(f"[View Media]({pub_url})")
                 except Exception as e:
-                    st.error(f"Upload failed: {e}")
+                    st.error(f"Failed to save: {e}")
 
     st.divider()
     st.markdown("#### Recent Uploads")
