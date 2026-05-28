@@ -157,9 +157,10 @@ PLOT_LAYOUT = dict(
     font_color="#e6edf3", font_family="DM Sans",
     colorway=["#58a6ff","#3fb950","#e3b341","#f78166","#bc8cff","#79c0ff","#56d364"],
     margin=dict(l=16, r=16, t=40, b=16),
-    xaxis=dict(gridcolor="#21262d", zerolinecolor="#30363d"),
-    yaxis=dict(gridcolor="#21262d", zerolinecolor="#30363d"),
 )
+# Applied separately per chart via update_xaxes/update_yaxes to avoid
+# duplicate-keyword conflicts when charts need their own axis overrides.
+AXIS_STYLE = dict(gridcolor="#21262d", zerolinecolor="#30363d")
 
 # -- Media helpers --------------------------------------------
 VIDEO_EXTS = {"mp4","mov","webm","avi"}
@@ -315,6 +316,8 @@ if page == "Dashboard":
     fig1.update_layout(**PLOT_LAYOUT, barmode="group",
                        legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
                        yaxis_title="Yards", xaxis_title=None, height=380)
+    fig1.update_xaxes(**AXIS_STYLE)
+    fig1.update_yaxes(**AXIS_STYLE)
     st.plotly_chart(fig1, use_container_width=True)
     st.divider()
 
@@ -333,6 +336,8 @@ if page == "Dashboard":
     fig2.update_layout(**PLOT_LAYOUT, height=380,
                        legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
                        xaxis_title=None, yaxis_title="Shots")
+    fig2.update_xaxes(**AXIS_STYLE)
+    fig2.update_yaxes(**AXIS_STYLE)
     st.plotly_chart(fig2, use_container_width=True)
     st.divider()
 
@@ -349,6 +354,8 @@ if page == "Dashboard":
                        annotations=[dict(text="Green < 10 yds  |  Yellow 10-20 yds  |  Red > 20 yds",
                                         xref="paper", yref="paper", x=1, y=1.06, showarrow=False,
                                         font_color="#8b949e", font_size=11, xanchor="right")])
+    fig3.update_xaxes(**AXIS_STYLE)
+    fig3.update_yaxes(**AXIS_STYLE)
     st.plotly_chart(fig3, use_container_width=True)
     st.divider()
 
@@ -365,6 +372,8 @@ if page == "Dashboard":
                      marker=dict(size=6, color="#56d364"), name="Carry")
     fig4.update_layout(**PLOT_LAYOUT, height=320, yaxis_title="Yards", xaxis_title=None,
                        legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
+    fig4.update_xaxes(**AXIS_STYLE)
+    fig4.update_yaxes(**AXIS_STYLE)
     st.plotly_chart(fig4, use_container_width=True)
 
     with st.expander("Raw Session Data"):
@@ -666,6 +675,8 @@ elif page == "Golf Knowledge":
         fig_sh.update_traces(textposition="top center")
         fig_sh.add_vline(x=0, line_color="#30363d", line_dash="dot")
         fig_sh.update_layout(**PLOT_LAYOUT, height=420, showlegend=False)
+        fig_sh.update_xaxes(**AXIS_STYLE)
+        fig_sh.update_yaxes(**AXIS_STYLE)
         fig_sh.update_xaxes(zerolinecolor="#58a6ff", zeroline=True)
         st.plotly_chart(fig_sh, use_container_width=True)
         st.caption("Bubble size = relative distance loss vs straight shot")
@@ -721,6 +732,8 @@ elif page == "Golf Knowledge":
         fig_spin.update_layout(**PLOT_LAYOUT, barmode="overlay", height=360,
                                yaxis_title="Spin Rate (RPM)", xaxis_title=None,
                                legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
+        fig_spin.update_xaxes(**AXIS_STYLE)
+        fig_spin.update_yaxes(**AXIS_STYLE)
         st.plotly_chart(fig_spin, use_container_width=True)
 
         # Magnus force diagram via Plotly
@@ -746,7 +759,6 @@ elif page == "Golf Knowledge":
                                font=dict(color="#e3b341", size=11))
         fig_mag.update_layout(
             **PLOT_LAYOUT, height=300, showlegend=False,
-            xaxis=dict(visible=False), yaxis=dict(visible=False),
         )
         fig_mag.update_layout(title="Backspin generates upward Magnus lift")
         fig_mag.update_layout(title_font=dict(color="#8b949e", size=12))
@@ -809,6 +821,8 @@ elif page == "Golf Knowledge":
         ))
         fig_ks.update_layout(**PLOT_LAYOUT, height=320, yaxis_title="% through downswing at peak velocity",
                              xaxis_title=None, yaxis_range=[0, 120])
+        fig_ks.update_xaxes(**AXIS_STYLE)
+        fig_ks.update_yaxes(**AXIS_STYLE)
         st.plotly_chart(fig_ks, use_container_width=True)
         st.caption("Each segment peaks and decelerates, transferring energy to the next. Hips slow as torso accelerates, etc.")
 
@@ -862,6 +876,8 @@ elif page == "Golf Knowledge":
                                 marker=dict(size=7, color=color))
         fig_hcp.update_layout(**PLOT_LAYOUT, height=360, yaxis_title="Carry Distance (yards)",
                               xaxis_title=None, legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
+        fig_hcp.update_xaxes(**AXIS_STYLE)
+        fig_hcp.update_yaxes(**AXIS_STYLE)
         st.plotly_chart(fig_hcp, use_container_width=True)
 
     # ── TAB 6: Practice Drills ───────────────────────────────────
