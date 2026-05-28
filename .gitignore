@@ -1,0 +1,2 @@
+# Firebase config — NEVER commit this
+.streamlit/secrets.toml
