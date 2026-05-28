@@ -94,27 +94,64 @@ def inject_css(t: dict):
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-  html, body, [class*="css"] {{ font-family: 'DM Sans', sans-serif; }}
-  .stApp {{ background: {t["bg"]}; color: {t["text"]}; }}
-
-  section[data-testid="stSidebar"] {{
-    background: {t["sidebar_bg"]} !important;
-    border-right: 1px solid {t["card_border"]};
+  /* ── Base ── */
+  html, body, [class*="css"] {{
+    font-family: 'DM Sans', sans-serif;
+    color: {t["text"]};
   }}
-  section[data-testid="stSidebar"] * {{ color: {t["sidebar_txt"]} !important; }}
-
-  h1, h2, h3 {{
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 2px; color: {t["heading"]} !important;
+  .stApp {{
+    background-color: {t["bg"]} !important;
   }}
-  h1 {{ font-size: 2.6rem !important; }}
-  h2 {{ font-size: 1.9rem !important; }}
-  h3 {{ font-size: 1.4rem !important; }}
 
+  /* ── Sidebar ── */
+  section[data-testid="stSidebar"] > div {{
+    background-color: {t["sidebar_bg"]} !important;
+  }}
+  section[data-testid="stSidebar"],
+  section[data-testid="stSidebar"] p,
+  section[data-testid="stSidebar"] span,
+  section[data-testid="stSidebar"] label,
+  section[data-testid="stSidebar"] div,
+  section[data-testid="stSidebar"] small,
+  section[data-testid="stSidebar"] a {{
+    color: {t["sidebar_txt"]} !important;
+  }}
+  section[data-testid="stSidebar"] hr {{
+    border-color: {t["sidebar_txt"]}33 !important;
+  }}
+
+  /* ── Headings ── */
+  h1, h2, h3, h4 {{
+    font-family: 'Bebas Neue', sans-serif !important;
+    letter-spacing: 2px;
+  }}
+  h1 {{ font-size: 2.6rem !important; color: {t["heading"]} !important; }}
+  h2 {{ font-size: 1.9rem !important; color: {t["heading"]} !important; }}
+  h3 {{ font-size: 1.4rem !important; color: {t["heading"]} !important; }}
+
+  /* ── Global text nodes ── */
+  p, span, li, td, th, label, div {{
+    color: {t["text"]};
+  }}
+  small, .stCaption, [data-testid="stCaptionContainer"] {{
+    color: {t["text_muted"]} !important;
+  }}
+  a {{ color: {t["accent"]}; }}
+
+  /* ── Markdown ── */
+  .stMarkdown p,
+  .stMarkdown li,
+  .stMarkdown span {{
+    color: {t["text"]} !important;
+  }}
+
+  /* ── Custom cards ── */
   .metric-card {{
     background: {t["card_bg"]};
-    border: 1px solid {t["card_border"]}; border-radius: 12px;
-    padding: 1rem 1.2rem; text-align: center;
+    border: 1px solid {t["card_border"]};
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    text-align: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }}
   .metric-card .label {{
@@ -125,109 +162,180 @@ def inject_css(t: dict):
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2.2rem; color: {t["accent"]}; line-height: 1;
   }}
-  .metric-card .sub {{ font-size: 0.75rem; color: {t["text_muted"]}; margin-top: 0.2rem; }}
+  .metric-card .sub {{
+    font-size: 0.75rem; color: {t["text_muted"]}; margin-top: 0.2rem;
+  }}
 
+  /* ── Badges ── */
   .badge {{
     display: inline-block; padding: 2px 10px; border-radius: 20px;
-    font-size: 0.72rem; font-weight: 600;
+    font-size: 0.72rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
   }}
-  .badge-Driver  {{ background:{t["accent"]}; color:{t["badge_on_accent"]}; }}
-  .badge-Irons   {{ background:{t["accent"]}22; color:{t["accent"]}; border:1px solid {t["accent"]}55; }}
-  .badge-Woods   {{ background:{t["accent2"]}22; color:{t["accent2"]}; border:1px solid {t["accent2"]}55; }}
-  .badge-Putting {{ background:{t["accent2"]}33; color:{t["accent2"]}; border:1px solid {t["accent2"]}55; }}
+  .badge-Driver  {{ background:{t["accent"]};   color:{t["sidebar_txt"]}; }}
+  .badge-Irons   {{ background:transparent; color:{t["accent"]};  border:2px solid {t["accent"]}; }}
+  .badge-Woods   {{ background:transparent; color:{t["accent2"]}; border:2px solid {t["accent2"]}; }}
+  .badge-Putting {{ background:transparent; color:{t["accent2"]}; border:2px solid {t["accent2"]}; }}
 
-  .media-wrapper {{
-    background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
-    border-radius: 10px; overflow: hidden; margin-bottom: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  /* ── Media / know cards ── */
+  .media-wrapper, .know-card {{
+    background: {t["card_bg"]};
+    border: 1px solid {t["card_border"]};
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   }}
   .media-title {{
     padding: 0.5rem 0.8rem 0.1rem;
     font-size: 0.95rem; font-weight: 600; color: {t["text"]};
   }}
-  .media-meta {{ padding: 0.35rem 0.8rem 0.6rem; font-size: 0.78rem; color: {t["text_muted"]}; }}
-  .media-meta strong {{ color: {t["text"]}; }}
-
-  .know-card {{
-    background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
-    border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  .media-meta {{
+    padding: 0.35rem 0.8rem 0.6rem;
+    font-size: 0.78rem; color: {t["text_muted"]};
   }}
+  .media-meta strong {{ color: {t["text"]}; }}
+  .know-card {{ padding: 1.2rem 1.4rem; overflow: visible; }}
   .know-card h4 {{
     font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
     letter-spacing: 1.5px; color: {t["heading"]} !important; margin-bottom: 0.4rem;
   }}
   .know-card p {{ font-size: 0.88rem; color: {t["text"]}; line-height: 1.65; margin: 0; }}
+
+  /* ── Level pills ── */
   .level-pill {{
     display: inline-block; padding: 1px 9px; border-radius: 20px;
     font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
     letter-spacing: 1px; margin-left: 8px; vertical-align: middle;
   }}
-  .level-beginner     {{ background:#2ea04322; color:#2a7d1e; border:1px solid #2ea04355; }}
-  .level-intermediate {{ background:#d2992222; color:#8b6914; border:1px solid #d2992255; }}
-  .level-advanced     {{ background:#6e40c922; color:#7d3c98; border:1px solid #6e40c955; }}
+  .level-beginner     {{ background:#2ea04318; color:#1e6b14; border:1px solid #2ea043; }}
+  .level-intermediate {{ background:#d2992218; color:#7a5800; border:1px solid #d29922; }}
+  .level-advanced     {{ background:#6e40c918; color:#5a2d91; border:1px solid #6e40c9; }}
+
+  /* ── Tip box ── */
   .tip-box {{
-    background: {t["tip_bg"]}; border-left: 3px solid {t["tip_border"]};
-    border-radius: 0 8px 8px 0; padding: 0.7rem 1rem; margin-top: 0.7rem;
+    background: {t["tip_bg"]};
+    border-left: 3px solid {t["tip_border"]};
+    border-radius: 0 8px 8px 0;
+    padding: 0.7rem 1rem; margin-top: 0.7rem;
     font-size: 0.84rem; color: {t["tip_color"]};
   }}
 
+  /* ── Tabs ── */
+  .stTabs [data-baseweb="tab-list"] {{
+    background: transparent !important;
+    gap: 4px;
+  }}
   .stTabs [role="tab"] {{
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.05rem; letter-spacing: 1.5px; color: {t["text_muted"]} !important;
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 1.05rem; letter-spacing: 1.5px;
+    color: {t["text_muted"]} !important;
+    background: transparent !important;
   }}
   .stTabs [aria-selected="true"] {{
     color: {t["tab_active"]} !important;
     border-bottom: 2px solid {t["tab_active"]} !important;
   }}
 
-  .stTextInput input, .stSelectbox select, .stNumberInput input,
-  .stDateInput input, .stTextArea textarea {{
-    background: {t["input_bg"]} !important; border: 1px solid {t["input_border"]} !important;
-    color: {t["text"]} !important; border-radius: 8px !important;
+  /* ── Form inputs ── */
+  input, textarea, select,
+  [data-baseweb="input"] input,
+  [data-baseweb="textarea"] textarea,
+  [data-baseweb="select"] div {{
+    background-color: {t["input_bg"]} !important;
+    border-color: {t["input_border"]} !important;
+    color: {t["text"]} !important;
+    border-radius: 8px !important;
   }}
-  /* Ensure all labels and widget text follow the theme */
-  .stRadio label, .stCheckbox label, .stSelectbox label,
-  .stNumberInput label, .stTextInput label, .stTextArea label,
-  .stDateInput label, .stFileUploader label,
-  .stMultiSelect label, .stSlider label {{
+  [data-baseweb="input"],
+  [data-baseweb="textarea"],
+  [data-baseweb="base-input"] {{
+    background-color: {t["input_bg"]} !important;
+    border-color: {t["input_border"]} !important;
+    border-radius: 8px !important;
+  }}
+  /* Placeholder text */
+  input::placeholder, textarea::placeholder {{
+    color: {t["text_muted"]} !important;
+    opacity: 0.7;
+  }}
+  /* Dropdown options */
+  [data-baseweb="popover"] li,
+  [data-baseweb="menu"] li {{
+    background-color: {t["card_bg"]} !important;
     color: {t["text"]} !important;
   }}
-  /* Caption and markdown text */
-  .stCaption, .stMarkdown p, .stMarkdown li {{
-    color: {t["text_muted"]} !important;
+  [data-baseweb="popover"] li:hover {{
+    background-color: {t["accent"]}22 !important;
   }}
-  /* Dataframe text */
-  .stDataFrame {{ color: {t["text"]} !important; }}
-  /* Expander header */
-  .streamlit-expanderHeader {{ color: {t["text"]} !important; }}
-  /* Info / success / warning / error boxes -- override Streamlit defaults */
-  div[data-testid="stAlert"] p {{ color: {t["text"]} !important; }}
-  /* Sidebar caption */
-  section[data-testid="stSidebar"] .stCaption {{
-    color: {t["sidebar_txt"]} !important; opacity: 0.75;
-  }}
-  /* Form submit button matches regular buttons */
-  .stFormSubmitButton > button {{
-    background: {t["btn_bg"]} !important;
-    color: {t["btn_color"]} !important; border: none !important;
-    border-radius: 8px !important; font-weight: 600 !important;
-  }}
-  /* Tab text */
-  .stTabs [data-baseweb="tab-list"] {{ background: transparent; }}
-  /* Metric widget */
-  [data-testid="stMetricValue"] {{ color: {t["accent"]} !important; }}
-  [data-testid="stMetricLabel"] {{ color: {t["text_muted"]} !important; }}
-  .stButton > button {{
-    background: {t["btn_bg"]};
-    color: {t["btn_color"]}; border: none; border-radius: 8px;
-    font-family: 'DM Sans', sans-serif; font-weight: 600;
-    padding: 0.55rem 1.4rem; transition: opacity .15s;
-  }}
-  .stButton > button:hover {{ opacity: .85; }}
-  hr {{ border-color: {t["hr"]}; }}
 
+  /* ── Buttons — ALL variants ── */
+  .stButton > button,
+  .stFormSubmitButton > button,
+  button[kind="primary"],
+  button[kind="secondary"] {{
+    background: {t["btn_bg"]} !important;
+    color: {t["btn_color"]} !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 600 !important;
+    padding: 0.55rem 1.4rem !important;
+    transition: opacity .15s !important;
+  }}
+  .stButton > button:hover,
+  .stFormSubmitButton > button:hover {{
+    opacity: 0.85 !important;
+    color: {t["btn_color"]} !important;
+  }}
+
+  /* ── Alerts / info boxes ── */
+  [data-testid="stAlert"],
+  [data-testid="stAlert"] p,
+  [data-testid="stAlert"] span {{
+    color: {t["text"]} !important;
+  }}
+
+  /* ── Expander ── */
+  [data-testid="stExpander"] summary,
+  [data-testid="stExpander"] summary p,
+  .streamlit-expanderHeader p {{
+    color: {t["text"]} !important;
+    font-weight: 600;
+  }}
+  [data-testid="stExpander"] {{
+    background: {t["card_bg"]} !important;
+    border: 1px solid {t["card_border"]} !important;
+    border-radius: 10px !important;
+  }}
+
+  /* ── Dataframe ── */
+  [data-testid="stDataFrame"] *,
+  .stDataFrame * {{
+    color: {t["text"]} !important;
+  }}
+  [data-testid="stDataFrame"] th {{
+    background: {t["card_border"]} !important;
+    color: {t["text"]} !important;
+  }}
+
+  /* ── Radio / checkbox ── */
+  [data-testid="stRadio"] label p,
+  [data-testid="stCheckbox"] label p {{
+    color: {t["text"]} !important;
+  }}
+
+  /* ── Multiselect tags ── */
+  [data-baseweb="tag"] {{
+    background-color: {t["accent"]}22 !important;
+    color: {t["accent"]} !important;
+  }}
+  [data-baseweb="tag"] span {{ color: {t["accent"]} !important; }}
+
+  /* ── Divider ── */
+  hr {{ border-color: {t["hr"]} !important; }}
+
+  /* ── Mobile ── */
   @media (max-width: 640px) {{
     h1 {{ font-size: 2rem !important; }}
     .metric-card .value {{ font-size: 1.7rem; }}
