@@ -105,23 +105,49 @@ def inject_css(t: dict):
   /* ── Base ── */
   html, body, [class*="css"] {{
     font-family: 'DM Sans', sans-serif;
-    color: {t["text"]};
   }}
   .stApp {{
     background-color: {t["bg"]} !important;
   }}
+  /* Main content area text */
+  .main .block-container p,
+  .main .block-container li,
+  .main .block-container td,
+  .main .block-container th,
+  .main .block-container label,
+  .main .block-container span:not([data-baseweb]),
+  .main .block-container div:not([data-baseweb]) {{
+    color: {t["text"]};
+  }}
+  .stMarkdown p, .stMarkdown li {{ color: {t["text"]} !important; }}
+  small, .stCaption, [data-testid="stCaptionContainer"] p {{
+    color: {t["text_muted"]} !important;
+  }}
+  a {{ color: {t["accent"]}; }}
 
-  /* ── Sidebar ── */
+  /* ── Sidebar: target only text nodes, NOT svg/path ── */
   section[data-testid="stSidebar"] > div:first-child {{
     background-color: {t["sidebar_bg"]} !important;
   }}
-  section[data-testid="stSidebar"] *,
   section[data-testid="stSidebar"] p,
-  section[data-testid="stSidebar"] span,
+  section[data-testid="stSidebar"] span:not([data-baseweb]),
   section[data-testid="stSidebar"] label,
   section[data-testid="stSidebar"] small,
-  section[data-testid="stSidebar"] a {{
+  section[data-testid="stSidebar"] a,
+  section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {{
     color: {t["sidebar_txt"]} !important;
+  }}
+  /* Radio option text in sidebar */
+  section[data-testid="stSidebar"] [data-testid="stRadio"] label p {{
+    color: {t["sidebar_txt"]} !important;
+  }}
+  /* Radio indicator dot — use accent color from sidebar palette */
+  section[data-testid="stSidebar"] [data-testid="stRadio"] [data-baseweb="radio"] div {{
+    border-color: {t["sidebar_txt"]}80 !important;
+  }}
+  section[data-testid="stSidebar"] [data-testid="stRadio"] [aria-checked="true"] div {{
+    background-color: {t["sidebar_txt"]} !important;
+    border-color: {t["sidebar_txt"]} !important;
   }}
   section[data-testid="stSidebar"] hr {{
     border-color: {t["sidebar_txt"]}40 !important;
@@ -136,20 +162,9 @@ def inject_css(t: dict):
   h2 {{ font-size: 1.9rem !important; color: {t["heading"]} !important; }}
   h3 {{ font-size: 1.4rem !important; color: {t["heading"]} !important; }}
 
-  /* ── Body text ── */
-  p, li, td, th {{ color: {t["text"]}; }}
-  small, .stCaption, [data-testid="stCaptionContainer"] p {{
-    color: {t["text_muted"]} !important;
-  }}
-  a {{ color: {t["accent"]}; }}
-  .stMarkdown p, .stMarkdown li, .stMarkdown span {{
-    color: {t["text"]} !important;
-  }}
-
-  /* ── Metric cards ── */
+  /* ── Custom cards ── */
   .metric-card {{
-    background: {t["card_bg"]};
-    border: 1px solid {t["card_border"]};
+    background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
     border-radius: 12px; padding: 1rem 1.2rem; text-align: center;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   }}
@@ -196,7 +211,7 @@ def inject_css(t: dict):
   }}
   .know-card p {{ font-size: 0.88rem; color: {t["text"]}; line-height: 1.65; margin: 0; }}
 
-  /* ── Level pills (fixed colors — readable on both themes) ── */
+  /* ── Level pills ── */
   .level-pill {{
     display: inline-block; padding: 1px 9px; border-radius: 20px;
     font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
@@ -225,32 +240,69 @@ def inject_css(t: dict):
     border-bottom: 2px solid {t["tab_active"]} !important;
   }}
 
-  /* ── Inputs ── */
-  input, textarea, select,
-  [data-baseweb="input"] input,
-  [data-baseweb="textarea"] textarea {{
-    background-color: {t["input_bg"]} !important;
-    border-color: {t["input_border"]} !important;
-    color: {t["text"]} !important;
-    border-radius: 8px !important;
-  }}
+  /* ── All widget containers: light bg ── */
   [data-baseweb="input"],
   [data-baseweb="textarea"],
-  [data-baseweb="base-input"] {{
+  [data-baseweb="base-input"],
+  [data-baseweb="select"],
+  [data-baseweb="select"] > div,
+  [data-testid="stMultiSelect"] [data-baseweb="select"],
+  [data-testid="stMultiSelect"] [data-baseweb="select"] > div {{
     background-color: {t["input_bg"]} !important;
     border-color: {t["input_border"]} !important;
+    border-radius: 8px !important;
+    color: {t["text"]} !important;
+  }}
+  /* Text inside inputs */
+  input, textarea {{
+    background-color: {t["input_bg"]} !important;
+    color: {t["text"]} !important;
     border-radius: 8px !important;
   }}
   input::placeholder, textarea::placeholder {{
     color: {t["text_muted"]} !important; opacity: 0.7;
   }}
-  [data-baseweb="popover"] li, [data-baseweb="menu"] li {{
+  /* Multiselect value text & dropdown value */
+  [data-baseweb="select"] [data-testid="stMarkdownContainer"] p,
+  [data-baseweb="select"] span,
+  [data-baseweb="select"] div[class] {{
+    color: {t["text"]} !important;
+    background-color: transparent !important;
+  }}
+  /* Multiselect tag chips */
+  [data-baseweb="tag"] {{
+    background-color: {t["accent"]}22 !important;
+    border: 1px solid {t["accent"]}55 !important;
+  }}
+  [data-baseweb="tag"] span {{ color: {t["accent"]} !important; }}
+  /* Dropdown options list */
+  [data-baseweb="popover"],
+  [data-baseweb="popover"] ul,
+  [data-baseweb="menu"] {{
+    background-color: {t["card_bg"]} !important;
+  }}
+  [data-baseweb="option"] {{
     background-color: {t["card_bg"]} !important;
     color: {t["text"]} !important;
   }}
-  [data-baseweb="popover"] li:hover {{
-    background-color: {t["accent"]}22 !important;
+  [data-baseweb="option"]:hover {{
+    background-color: {t["accent"]}18 !important;
   }}
+
+  /* ── Widget labels ── */
+  [data-testid="stWidgetLabel"] p,
+  [data-testid="stWidgetLabel"] label,
+  .stTextInput label, .stSelectbox label,
+  .stNumberInput label, .stTextArea label,
+  .stDateInput label, .stMultiSelect label,
+  .stFileUploader label, .stSlider label {{
+    color: {t["text"]} !important;
+    font-weight: 500;
+  }}
+
+  /* ── Radio / Checkbox in main area ── */
+  [data-testid="stRadio"] label p,
+  [data-testid="stCheckbox"] label p {{ color: {t["text"]} !important; }}
 
   /* ── Buttons ── */
   .stButton > button,
@@ -277,24 +329,13 @@ def inject_css(t: dict):
     border: 1px solid {t["card_border"]} !important;
     border-radius: 10px !important;
   }}
-  [data-testid="stExpander"] summary p,
-  .streamlit-expanderHeader p {{ color: {t["text"]} !important; font-weight: 600; }}
+  [data-testid="stExpander"] summary p {{ color: {t["text"]} !important; font-weight: 600; }}
 
   /* ── Dataframe ── */
   [data-testid="stDataFrame"] * {{ color: {t["text"]} !important; }}
   [data-testid="stDataFrame"] th {{
     background: {t["card_border"]} !important; color: {t["text"]} !important;
   }}
-
-  /* ── Radio / checkbox ── */
-  [data-testid="stRadio"] label p,
-  [data-testid="stCheckbox"] label p {{ color: {t["text"]} !important; }}
-
-  /* ── Multiselect tags ── */
-  [data-baseweb="tag"] {{
-    background-color: {t["accent"]}22 !important; color: {t["accent"]} !important;
-  }}
-  [data-baseweb="tag"] span {{ color: {t["accent"]} !important; }}
 
   /* ── Divider ── */
   hr {{ border-color: {t["hr"]} !important; }}
@@ -349,20 +390,6 @@ for k, v in defaults.items():
 
 # Inject theme CSS (must run before any widgets render)
 inject_css(get_theme())
-
-# -- Plotly theme (built dynamically per render) --------------
-def get_plot_layout():
-    t = get_theme()
-    return dict(
-        paper_bgcolor=t["plot_paper"], plot_bgcolor=t["plot_bg"],
-        font_color=t["plot_font"], font_family="DM Sans",
-        colorway=t["plot_colors"],
-        margin=dict(l=16, r=16, t=40, b=16),
-    )
-
-def get_axis_style():
-    t = get_theme()
-    return dict(gridcolor=t["plot_grid"], zerolinecolor=t["plot_zero"])
 
 # -- Media helpers --------------------------------------------
 VIDEO_EXTS = {"mp4","mov","webm","avi"}
