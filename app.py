@@ -450,7 +450,7 @@ with st.sidebar:
     st.divider()
     st.markdown("**Navigate**")
     page = st.radio(
-        "", ["Dashboard", "Media Vault", "Golf Knowledge", "Log Session", "Upload Media"],
+        "", ["Dashboard", "Media Vault", "Golf Knowledge", "Ball Path Visuals", "Swing Types", "Log Session", "Upload Media"],
         label_visibility="collapsed"
     )
     if page in ["Log Session", "Upload Media"] and not st.session_state.is_admin:
@@ -831,8 +831,9 @@ elif page == "Golf Knowledge":
             xaxis_title="Face Angle (deg, - = closed, + = open)",
             yaxis_title="Curve (deg, - = draw, + = fade)",
         )
+        t = get_theme() # This grabs your light/dark colors
         fig_fp.update_layout(title="Ball Curve by Face & Path Angle")
-        fig_fp.update_layout(title_font=dict(color="#8b949e", size=13))
+        fig_fp.update_layout(title_font=dict(color=t["plot_font"], size=13))
         st.plotly_chart(fig_fp, use_container_width=True)
 
     # ── TAB 2: Shot Shapes ───────────────────────────────────────
@@ -1307,3 +1308,86 @@ elif page == "Upload Media":
             column_config={"URL": st.column_config.LinkColumn("URL")})
     else:
         st.info("No media uploaded yet.")
+        
+# =============================================================
+#  PAGE: BALL PATH VISUALS
+# =============================================================
+elif page == "Ball Path Visuals":
+    st.markdown("# ⛳ Ball Flight Laws & Paths")
+    st.caption("Understand how the club path and face angle at impact create your ball flight.")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Visual Diagram (SVG)")
+        # Clean SVG diagram showing Straight, Draw/Hook, Fade/Slice
+        svg_code = """
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="background-color: #f8f9fa; border-radius: 10px; border: 1px solid #ddd;">
+            <line x1="200" y1="350" x2="200" y2="50" stroke="#999" stroke-width="2" stroke-dasharray="5,5" />
+            <text x="210" y="40" fill="#999" font-family="sans-serif" font-size="12">Target Line</text>
+            
+            <circle cx="200" cy="350" r="8" fill="white" stroke="#333" stroke-width="2"/>
+            
+            <path d="M 200 350 L 200 80" stroke="green" stroke-width="3" fill="none" />
+            <text x="145" y="80" fill="green" font-family="sans-serif" font-size="14" font-weight="bold">Straight</text>
+            
+            <path d="M 200 350 Q 250 200 150 100" stroke="blue" stroke-width="3" fill="none" />
+            <text x="100" y="100" fill="blue" font-family="sans-serif" font-size="14" font-weight="bold">Draw</text>
+            
+            <path d="M 200 350 Q 150 200 250 100" stroke="red" stroke-width="3" fill="none" />
+            <text x="260" y="100" fill="red" font-family="sans-serif" font-size="14" font-weight="bold">Fade</text>
+        </svg>
+        """
+        st.markdown(svg_code, unsafe_allow_html=True)
+
+    with col2:
+        st.subheader("Reference Images")
+        st.markdown("""
+        **Real-world tracking visuals (Trackman/Foresight):**
+        * 🟦 **[The Draw Pattern](https://blog.trackmangolf.com/wp-content/uploads/2017/08/Draw.jpg)** - Starts right of target line, curves left. Face is *closed* to the path, but *open* to the target.
+        * 🟥 **[The Fade Pattern](https://blog.trackmangolf.com/wp-content/uploads/2017/08/Fade.jpg)** - Starts left of target line, curves right. Face is *open* to the path, but *closed* to the target.
+        * 🟩 **[The Straight Shot](https://blog.trackmangolf.com/wp-content/uploads/2017/08/Straight.jpg)** - Zero path, zero face.
+        """)
+        
+        st.info("💡 **Rule of thumb:** The ball *starts* where the club face is pointing, and *curves* away from the club path.")
+
+# =============================================================
+#  PAGE: SWING TYPES
+# =============================================================
+elif page == "Swing Types":
+    st.markdown("# 🏌️ Swing Planes & Types")
+    st.caption("Visualizing the difference between swing styles and key checkpoints.")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Visual Diagram (SVG)")
+        # SVG Diagram showing 1-plane vs 2-plane swing concepts
+        svg_swing = """
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="background-color: #f8f9fa; border-radius: 10px; border: 1px solid #ddd;">
+            <circle cx="200" cy="150" r="20" fill="#cbd5e1" stroke="#333" stroke-width="2"/> <line x1="200" y1="170" x2="200" y2="280" stroke="#333" stroke-width="4" /> <line x1="200" y1="280" x2="180" y2="380" stroke="#333" stroke-width="4" /> <line x1="200" y1="280" x2="220" y2="380" stroke="#333" stroke-width="4" /> <path d="M 120 380 Q 50 200 200 100" stroke="#d97706" stroke-width="3" stroke-dasharray="5,5" fill="none" />
+            <text x="130" y="80" fill="#d97706" font-family="sans-serif" font-size="14" font-weight="bold">One-Plane (Flatter)</text>
+            
+            <path d="M 120 380 Q 150 150 200 50" stroke="#2563eb" stroke-width="3" stroke-dasharray="5,5" fill="none" />
+            <text x="210" y="60" fill="#2563eb" font-family="sans-serif" font-size="14" font-weight="bold">Two-Plane (Steeper)</text>
+        </svg>
+        """
+        st.markdown(svg_swing, unsafe_allow_html=True)
+
+    with col2:
+        st.subheader("Reference Images")
+        st.markdown("""
+        **Common Swing Archetypes:**
+        
+        * 🟠 **One-Plane Swing (e.g., Ben Hogan, Matt Kuchar):**
+          * The left arm and the shoulders are on the exact same angle at the top of the backswing.
+          * Requires more torso rotation.
+          * [View Reference Image](https://www.golfdistillery.com/wp-content/uploads/2022/11/one-plane-swing-golf.jpg)
+          
+        * 🔵 **Two-Plane Swing (e.g., Jack Nicklaus, Justin Thomas):**
+          * The left arm is steeper (higher) than the shoulder line at the top.
+          * Uses more vertical arm lift and timing drops.
+          * [View Reference Image](https://www.golfdistillery.com/wp-content/uploads/2022/11/two-plane-swing-golf.jpg)
+        """)
+        
+        st.warning("Note: Neither is 'wrong', but they require different sequencing on the downswing!")
