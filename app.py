@@ -22,113 +22,180 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# -- Custom CSS -----------------------------------------------
-st.markdown("""
+# -- Theme definitions ----------------------------------------
+THEMES = {
+    "light": {
+        # Green fairway + parchment beige
+        "bg":          "#f5f0e8",   # warm parchment
+        "bg2":         "#ede8dc",   # slightly darker parchment
+        "sidebar_bg":  "#2d5a27",   # deep fairway green
+        "sidebar_txt": "#f5f0e8",
+        "card_bg":     "#fffdf7",
+        "card_border": "#d4c9a8",
+        "text":        "#1a2e18",   # dark forest
+        "text_muted":  "#6b7c69",
+        "accent":      "#2d7a22",   # fairway green
+        "accent2":     "#8b6914",   # warm gold
+        "heading":     "#1e5c19",
+        "btn_bg":      "linear-gradient(135deg, #2d7a22, #4a9e3f)",
+        "input_bg":    "#fffdf7",
+        "input_border":"#c4b88a",
+        "hr":          "#d4c9a8",
+        "tab_active":  "#2d7a22",
+        "tip_bg":      "#e8f5e5",
+        "tip_border":  "#2d7a22",
+        "tip_color":   "#1e5c19",
+        "plot_paper":  "#f5f0e8",
+        "plot_bg":     "#ede8dc",
+        "plot_font":   "#1a2e18",
+        "plot_grid":   "#c4b88a",
+        "plot_zero":   "#2d7a22",
+        "plot_colors": ["#2d7a22","#8b6914","#c0392b","#1a6b8a","#7d3c98","#d4892a","#2e86c1"],
+    },
+    "dark": {
+        # Original dark slate theme
+        "bg":          "#0d1117",
+        "bg2":         "#161b22",
+        "sidebar_bg":  "#161b22",
+        "sidebar_txt": "#e6edf3",
+        "card_bg":     "#161b22",
+        "card_border": "#21262d",
+        "text":        "#e6edf3",
+        "text_muted":  "#8b949e",
+        "accent":      "#58a6ff",
+        "accent2":     "#3fb950",
+        "heading":     "#58a6ff",
+        "btn_bg":      "linear-gradient(135deg, #1f6feb, #388bfd)",
+        "input_bg":    "#0d1117",
+        "input_border":"#30363d",
+        "hr":          "#21262d",
+        "tab_active":  "#58a6ff",
+        "tip_bg":      "#1c2333",
+        "tip_border":  "#58a6ff",
+        "tip_color":   "#79c0ff",
+        "plot_paper":  "#161b22",
+        "plot_bg":     "#161b22",
+        "plot_font":   "#e6edf3",
+        "plot_grid":   "#21262d",
+        "plot_zero":   "#30363d",
+        "plot_colors": ["#58a6ff","#3fb950","#e3b341","#f78166","#bc8cff","#79c0ff","#56d364"],
+    },
+}
+
+def get_theme():
+    return THEMES["dark"] if st.session_state.get("dark_theme", False) else THEMES["light"]
+
+def inject_css(t: dict):
+    st.markdown(f"""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-  html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
-  .stApp { background: #0d1117; color: #e6edf3; }
+  html, body, [class*="css"] {{ font-family: 'DM Sans', sans-serif; }}
+  .stApp {{ background: {t["bg"]}; color: {t["text"]}; }}
 
-  section[data-testid="stSidebar"] {
-    background: #161b22; border-right: 1px solid #21262d;
-  }
-  section[data-testid="stSidebar"] * { color: #e6edf3 !important; }
+  section[data-testid="stSidebar"] {{
+    background: {t["sidebar_bg"]} !important;
+    border-right: 1px solid {t["card_border"]};
+  }}
+  section[data-testid="stSidebar"] * {{ color: {t["sidebar_txt"]} !important; }}
 
-  h1, h2, h3 {
+  h1, h2, h3 {{
     font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 2px; color: #58a6ff !important;
-  }
-  h1 { font-size: 2.6rem !important; }
-  h2 { font-size: 1.9rem !important; }
-  h3 { font-size: 1.4rem !important; }
+    letter-spacing: 2px; color: {t["heading"]} !important;
+  }}
+  h1 {{ font-size: 2.6rem !important; }}
+  h2 {{ font-size: 1.9rem !important; }}
+  h3 {{ font-size: 1.4rem !important; }}
 
-  .metric-card {
-    background: linear-gradient(135deg, #161b22, #1c2333);
-    border: 1px solid #30363d; border-radius: 12px;
+  .metric-card {{
+    background: {t["card_bg"]};
+    border: 1px solid {t["card_border"]}; border-radius: 12px;
     padding: 1rem 1.2rem; text-align: center;
-  }
-  .metric-card .label {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }}
+  .metric-card .label {{
     font-size: 0.72rem; text-transform: uppercase;
-    letter-spacing: 1.5px; color: #8b949e; margin-bottom: 0.25rem;
-  }
-  .metric-card .value {
+    letter-spacing: 1.5px; color: {t["text_muted"]}; margin-bottom: 0.25rem;
+  }}
+  .metric-card .value {{
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.2rem; color: #58a6ff; line-height: 1;
-  }
-  .metric-card .sub { font-size: 0.75rem; color: #8b949e; margin-top: 0.2rem; }
+    font-size: 2.2rem; color: {t["accent"]}; line-height: 1;
+  }}
+  .metric-card .sub {{ font-size: 0.75rem; color: {t["text_muted"]}; margin-top: 0.2rem; }}
 
-  .badge {
+  .badge {{
     display: inline-block; padding: 2px 10px; border-radius: 20px;
     font-size: 0.72rem; font-weight: 600;
     text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
-  }
-  .badge-Driver  { background:#1f6feb; color:#fff; }
-  .badge-Irons   { background:#388bfd22; color:#58a6ff; border:1px solid #388bfd55; }
-  .badge-Woods   { background:#2ea04322; color:#3fb950; border:1px solid #2ea04355; }
-  .badge-Putting { background:#d2992222; color:#e3b341; border:1px solid #d2992255; }
+  }}
+  .badge-Driver  {{ background:{t["accent"]}; color:#fff; }}
+  .badge-Irons   {{ background:{t["accent"]}22; color:{t["accent"]}; border:1px solid {t["accent"]}55; }}
+  .badge-Woods   {{ background:{t["accent2"]}22; color:{t["accent2"]}; border:1px solid {t["accent2"]}55; }}
+  .badge-Putting {{ background:{t["accent2"]}33; color:{t["accent2"]}; border:1px solid {t["accent2"]}55; }}
 
-  .media-wrapper {
-    background: #161b22; border: 1px solid #21262d;
+  .media-wrapper {{
+    background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
     border-radius: 10px; overflow: hidden; margin-bottom: 1rem;
-  }
-  .media-title {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  }}
+  .media-title {{
     padding: 0.5rem 0.8rem 0.1rem;
-    font-size: 0.95rem; font-weight: 600; color: #e6edf3;
-  }
-  .media-meta { padding: 0.35rem 0.8rem 0.6rem; font-size: 0.78rem; color: #8b949e; }
-  .media-meta strong { color: #e6edf3; }
+    font-size: 0.95rem; font-weight: 600; color: {t["text"]};
+  }}
+  .media-meta {{ padding: 0.35rem 0.8rem 0.6rem; font-size: 0.78rem; color: {t["text_muted"]}; }}
+  .media-meta strong {{ color: {t["text"]}; }}
 
-  /* Knowledge page cards */
-  .know-card {
-    background: #161b22; border: 1px solid #21262d;
+  .know-card {{
+    background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
     border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1rem;
-  }
-  .know-card h4 {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  }}
+  .know-card h4 {{
     font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
-    letter-spacing: 1.5px; color: #58a6ff !important; margin-bottom: 0.4rem;
-  }
-  .know-card p { font-size: 0.88rem; color: #c9d1d9; line-height: 1.65; margin: 0; }
-  .level-pill {
+    letter-spacing: 1.5px; color: {t["heading"]} !important; margin-bottom: 0.4rem;
+  }}
+  .know-card p {{ font-size: 0.88rem; color: {t["text"]}; line-height: 1.65; margin: 0; }}
+  .level-pill {{
     display: inline-block; padding: 1px 9px; border-radius: 20px;
     font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
     letter-spacing: 1px; margin-left: 8px; vertical-align: middle;
-  }
-  .level-beginner     { background:#2ea04322; color:#3fb950; border:1px solid #2ea04355; }
-  .level-intermediate { background:#d2992222; color:#e3b341; border:1px solid #d2992255; }
-  .level-advanced     { background:#6e40c922; color:#bc8cff; border:1px solid #6e40c955; }
-  .tip-box {
-    background: #1c2333; border-left: 3px solid #58a6ff;
+  }}
+  .level-beginner     {{ background:#2ea04322; color:#2a7d1e; border:1px solid #2ea04355; }}
+  .level-intermediate {{ background:#d2992222; color:#8b6914; border:1px solid #d2992255; }}
+  .level-advanced     {{ background:#6e40c922; color:#7d3c98; border:1px solid #6e40c955; }}
+  .tip-box {{
+    background: {t["tip_bg"]}; border-left: 3px solid {t["tip_border"]};
     border-radius: 0 8px 8px 0; padding: 0.7rem 1rem; margin-top: 0.7rem;
-    font-size: 0.84rem; color: #79c0ff;
-  }
+    font-size: 0.84rem; color: {t["tip_color"]};
+  }}
 
-  .stTabs [role="tab"] {
+  .stTabs [role="tab"] {{
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.05rem; letter-spacing: 1.5px; color: #8b949e !important;
-  }
-  .stTabs [aria-selected="true"] {
-    color: #58a6ff !important; border-bottom: 2px solid #58a6ff !important;
-  }
+    font-size: 1.05rem; letter-spacing: 1.5px; color: {t["text_muted"]} !important;
+  }}
+  .stTabs [aria-selected="true"] {{
+    color: {t["tab_active"]} !important;
+    border-bottom: 2px solid {t["tab_active"]} !important;
+  }}
 
   .stTextInput input, .stSelectbox select, .stNumberInput input,
-  .stDateInput input, .stTextArea textarea {
-    background: #0d1117 !important; border: 1px solid #30363d !important;
-    color: #e6edf3 !important; border-radius: 8px !important;
-  }
-  .stButton > button {
-    background: linear-gradient(135deg, #1f6feb, #388bfd);
+  .stDateInput input, .stTextArea textarea {{
+    background: {t["input_bg"]} !important; border: 1px solid {t["input_border"]} !important;
+    color: {t["text"]} !important; border-radius: 8px !important;
+  }}
+  .stButton > button {{
+    background: {t["btn_bg"]};
     color: #fff; border: none; border-radius: 8px;
     font-family: 'DM Sans', sans-serif; font-weight: 600;
     padding: 0.55rem 1.4rem; transition: opacity .15s;
-  }
-  .stButton > button:hover { opacity: .85; }
-  hr { border-color: #21262d; }
+  }}
+  .stButton > button:hover {{ opacity: .85; }}
+  hr {{ border-color: {t["hr"]}; }}
 
-  @media (max-width: 640px) {
-    h1 { font-size: 2rem !important; }
-    .metric-card .value { font-size: 1.7rem; }
-  }
+  @media (max-width: 640px) {{
+    h1 {{ font-size: 2rem !important; }}
+    .metric-card .value {{ font-size: 1.7rem; }}
+  }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -145,22 +212,29 @@ defaults = {
     "is_admin": False,
     "shot_shape": "Straight",
     "auth_error": False,
-    "edit_id": None,          # which media item is being edited
+    "edit_id": None,
+    "dark_theme": False,      # False = green/beige light, True = dark
 }
 for k, v in defaults.items():
     if k not in st.session_state:
         st.session_state[k] = v
 
-# -- Plotly shared theme --------------------------------------
-PLOT_LAYOUT = dict(
-    paper_bgcolor="#161b22", plot_bgcolor="#161b22",
-    font_color="#e6edf3", font_family="DM Sans",
-    colorway=["#58a6ff","#3fb950","#e3b341","#f78166","#bc8cff","#79c0ff","#56d364"],
-    margin=dict(l=16, r=16, t=40, b=16),
-)
-# Applied separately per chart via update_xaxes/update_yaxes to avoid
-# duplicate-keyword conflicts when charts need their own axis overrides.
-AXIS_STYLE = dict(gridcolor="#21262d", zerolinecolor="#30363d")
+# Inject theme CSS (must run before any widgets render)
+inject_css(get_theme())
+
+# -- Plotly theme (built dynamically per render) --------------
+def get_plot_layout():
+    t = get_theme()
+    return dict(
+        paper_bgcolor=t["plot_paper"], plot_bgcolor=t["plot_bg"],
+        font_color=t["plot_font"], font_family="DM Sans",
+        colorway=t["plot_colors"],
+        margin=dict(l=16, r=16, t=40, b=16),
+    )
+
+def get_axis_style():
+    t = get_theme()
+    return dict(gridcolor=t["plot_grid"], zerolinecolor=t["plot_zero"])
 
 # -- Media helpers --------------------------------------------
 VIDEO_EXTS = {"mp4","mov","webm","avi"}
@@ -229,6 +303,10 @@ with st.sidebar:
         page = "Dashboard"
 
     st.divider()
+    theme_label = "Switch to Dark Theme" if not st.session_state.dark_theme else "Switch to Green Theme"
+    if st.button(theme_label, use_container_width=True):
+        st.session_state.dark_theme = not st.session_state.dark_theme
+        st.rerun()
     st.caption("Built with Streamlit + Supabase")
 
 # =============================================================
@@ -313,11 +391,11 @@ if page == "Dashboard":
     fig1.add_bar(name="Max Distance", x=grp["club_used"], y=grp["Max"],
                  marker_color="#3fb950", opacity=0.55,
                  text=grp["Max"], textposition="outside", textfont_color="#8b949e")
-    fig1.update_layout(**PLOT_LAYOUT, barmode="group",
+    fig1.update_layout(**get_plot_layout(), barmode="group",
                        legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
                        yaxis_title="Yards", xaxis_title=None, height=380)
-    fig1.update_xaxes(**AXIS_STYLE)
-    fig1.update_yaxes(**AXIS_STYLE)
+    fig1.update_xaxes(**get_axis_style())
+    fig1.update_yaxes(**get_axis_style())
     st.plotly_chart(fig1, use_container_width=True)
     st.divider()
 
@@ -333,11 +411,11 @@ if page == "Dashboard":
     fig2 = px.bar(shape_grp.sort_values("shot_shape"), x="shot_shape", y="count",
                   color="club_used", barmode="group",
                   labels={"shot_shape":"Shot Shape","count":"# of Shots","club_used":"Club"})
-    fig2.update_layout(**PLOT_LAYOUT, height=380,
+    fig2.update_layout(**get_plot_layout(), height=380,
                        legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
                        xaxis_title=None, yaxis_title="Shots")
-    fig2.update_xaxes(**AXIS_STYLE)
-    fig2.update_yaxes(**AXIS_STYLE)
+    fig2.update_xaxes(**get_axis_style())
+    fig2.update_yaxes(**get_axis_style())
     st.plotly_chart(fig2, use_container_width=True)
     st.divider()
 
@@ -350,12 +428,12 @@ if page == "Dashboard":
     cons["color"] = cons["SD"].apply(lambda v: "#3fb950" if v < 10 else ("#e3b341" if v < 20 else "#f78166"))
     fig3 = go.Figure(go.Bar(x=cons["club_used"], y=cons["SD"].round(1), marker_color=cons["color"],
                              text=cons["SD"].round(1), textposition="outside", textfont_color="#8b949e"))
-    fig3.update_layout(**PLOT_LAYOUT, height=340, yaxis_title="Std Dev (yards)", xaxis_title=None,
+    fig3.update_layout(**get_plot_layout(), height=340, yaxis_title="Std Dev (yards)", xaxis_title=None,
                        annotations=[dict(text="Green < 10 yds  |  Yellow 10-20 yds  |  Red > 20 yds",
                                         xref="paper", yref="paper", x=1, y=1.06, showarrow=False,
                                         font_color="#8b949e", font_size=11, xanchor="right")])
-    fig3.update_xaxes(**AXIS_STYLE)
-    fig3.update_yaxes(**AXIS_STYLE)
+    fig3.update_xaxes(**get_axis_style())
+    fig3.update_yaxes(**get_axis_style())
     st.plotly_chart(fig3, use_container_width=True)
     st.divider()
 
@@ -370,10 +448,10 @@ if page == "Dashboard":
     fig4.add_scatter(x=trend_df["session_date"], y=trend_df["carry_distance"],
                      mode="lines+markers", line=dict(color="#3fb950", width=2, dash="dot"),
                      marker=dict(size=6, color="#56d364"), name="Carry")
-    fig4.update_layout(**PLOT_LAYOUT, height=320, yaxis_title="Yards", xaxis_title=None,
+    fig4.update_layout(**get_plot_layout(), height=320, yaxis_title="Yards", xaxis_title=None,
                        legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
-    fig4.update_xaxes(**AXIS_STYLE)
-    fig4.update_yaxes(**AXIS_STYLE)
+    fig4.update_xaxes(**get_axis_style())
+    fig4.update_yaxes(**get_axis_style())
     st.plotly_chart(fig4, use_container_width=True)
 
     with st.expander("Raw Session Data"):
@@ -597,7 +675,7 @@ elif page == "Golf Knowledge":
         fig_fp.add_vline(x=0, line_color="#30363d", line_dash="dot")
         fig_fp.add_hline(y=0, line_color="#30363d", line_dash="dot")
         fig_fp.update_layout(
-            **PLOT_LAYOUT, height=340,
+            **get_plot_layout(), height=340,
             xaxis_title="Face Angle (deg, - = closed, + = open)",
             yaxis_title="Curve (deg, - = draw, + = fade)",
             legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
@@ -674,9 +752,9 @@ elif page == "Golf Knowledge":
         )
         fig_sh.update_traces(textposition="top center")
         fig_sh.add_vline(x=0, line_color="#30363d", line_dash="dot")
-        fig_sh.update_layout(**PLOT_LAYOUT, height=420, showlegend=False)
-        fig_sh.update_xaxes(**AXIS_STYLE)
-        fig_sh.update_yaxes(**AXIS_STYLE)
+        fig_sh.update_layout(**get_plot_layout(), height=420, showlegend=False)
+        fig_sh.update_xaxes(**get_axis_style())
+        fig_sh.update_yaxes(**get_axis_style())
         fig_sh.update_xaxes(zerolinecolor="#58a6ff", zeroline=True)
         st.plotly_chart(fig_sh, use_container_width=True)
         st.caption("Bubble size = relative distance loss vs straight shot")
@@ -729,11 +807,11 @@ elif page == "Golf Knowledge":
                          text=spin_data["Avg"], textposition="outside", textfont_color="#8b949e")
         fig_spin.add_bar(name="Max", x=spin_data["Club"], y=spin_data["Max"],
                          marker_color="#79c0ff", opacity=0.4)
-        fig_spin.update_layout(**PLOT_LAYOUT, barmode="overlay", height=360,
+        fig_spin.update_layout(**get_plot_layout(), barmode="overlay", height=360,
                                yaxis_title="Spin Rate (RPM)", xaxis_title=None,
                                legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
-        fig_spin.update_xaxes(**AXIS_STYLE)
-        fig_spin.update_yaxes(**AXIS_STYLE)
+        fig_spin.update_xaxes(**get_axis_style())
+        fig_spin.update_yaxes(**get_axis_style())
         st.plotly_chart(fig_spin, use_container_width=True)
 
         # Magnus force diagram via Plotly
@@ -758,7 +836,7 @@ elif page == "Golf Knowledge":
                                arrowcolor="#e3b341", text="Lift (Magnus Force)",
                                font=dict(color="#e3b341", size=11))
         fig_mag.update_layout(
-            **PLOT_LAYOUT, height=300, showlegend=False,
+            **get_plot_layout(), height=300, showlegend=False,
         )
         fig_mag.update_layout(title="Backspin generates upward Magnus lift")
         fig_mag.update_layout(title_font=dict(color="#8b949e", size=12))
@@ -819,10 +897,10 @@ elif page == "Golf Knowledge":
             text=[f"Peaks at {v}%" for v in ks_data["Peak_Velocity_pct"]],
             textposition="outside", textfont_color="#8b949e"
         ))
-        fig_ks.update_layout(**PLOT_LAYOUT, height=320, yaxis_title="% through downswing at peak velocity",
+        fig_ks.update_layout(**get_plot_layout(), height=320, yaxis_title="% through downswing at peak velocity",
                              xaxis_title=None, yaxis_range=[0, 120])
-        fig_ks.update_xaxes(**AXIS_STYLE)
-        fig_ks.update_yaxes(**AXIS_STYLE)
+        fig_ks.update_xaxes(**get_axis_style())
+        fig_ks.update_yaxes(**get_axis_style())
         st.plotly_chart(fig_ks, use_container_width=True)
         st.caption("Each segment peaks and decelerates, transferring energy to the next. Hips slow as torso accelerates, etc.")
 
@@ -874,10 +952,10 @@ elif page == "Golf Knowledge":
                                 mode="lines+markers", name=cat_col,
                                 line=dict(color=color, width=2),
                                 marker=dict(size=7, color=color))
-        fig_hcp.update_layout(**PLOT_LAYOUT, height=360, yaxis_title="Carry Distance (yards)",
+        fig_hcp.update_layout(**get_plot_layout(), height=360, yaxis_title="Carry Distance (yards)",
                               xaxis_title=None, legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
-        fig_hcp.update_xaxes(**AXIS_STYLE)
-        fig_hcp.update_yaxes(**AXIS_STYLE)
+        fig_hcp.update_xaxes(**get_axis_style())
+        fig_hcp.update_yaxes(**get_axis_style())
         st.plotly_chart(fig_hcp, use_container_width=True)
 
     # ── TAB 6: Practice Drills ───────────────────────────────────
