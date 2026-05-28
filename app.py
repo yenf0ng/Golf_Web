@@ -659,7 +659,6 @@ elif page == "Golf Knowledge":
         fig_sh = px.scatter(
             shapes_plot, x="LR_Curve", y="Height",
             size="Distance_Loss", color="Shape",
-        size_min=6,
             text="Shape", size_max=30,
             labels={"LR_Curve":"Left (-) / Right (+) Curve (approx yds at 150y)",
                     "Height":"Relative Trajectory Height"},
