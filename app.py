@@ -38,6 +38,8 @@ THEMES = {
         "accent2":     "#8b6914",   # warm gold
         "heading":     "#1e5c19",
         "btn_bg":      "linear-gradient(135deg, #2d7a22, #4a9e3f)",
+        "btn_color":   "#ffffff",
+        "badge_on_accent": "#ffffff",
         "input_bg":    "#fffdf7",
         "input_border":"#c4b88a",
         "hr":          "#d4c9a8",
@@ -66,6 +68,8 @@ THEMES = {
         "accent2":     "#3fb950",
         "heading":     "#58a6ff",
         "btn_bg":      "linear-gradient(135deg, #1f6feb, #388bfd)",
+        "btn_color":   "#ffffff",
+        "badge_on_accent": "#ffffff",
         "input_bg":    "#0d1117",
         "input_border":"#30363d",
         "hr":          "#21262d",
@@ -128,7 +132,7 @@ def inject_css(t: dict):
     font-size: 0.72rem; font-weight: 600;
     text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
   }}
-  .badge-Driver  {{ background:{t["accent"]}; color:#fff; }}
+  .badge-Driver  {{ background:{t["accent"]}; color:{t["badge_on_accent"]}; }}
   .badge-Irons   {{ background:{t["accent"]}22; color:{t["accent"]}; border:1px solid {t["accent"]}55; }}
   .badge-Woods   {{ background:{t["accent2"]}22; color:{t["accent2"]}; border:1px solid {t["accent2"]}55; }}
   .badge-Putting {{ background:{t["accent2"]}33; color:{t["accent2"]}; border:1px solid {t["accent2"]}55; }}
@@ -183,9 +187,41 @@ def inject_css(t: dict):
     background: {t["input_bg"]} !important; border: 1px solid {t["input_border"]} !important;
     color: {t["text"]} !important; border-radius: 8px !important;
   }}
+  /* Ensure all labels and widget text follow the theme */
+  .stRadio label, .stCheckbox label, .stSelectbox label,
+  .stNumberInput label, .stTextInput label, .stTextArea label,
+  .stDateInput label, .stFileUploader label,
+  .stMultiSelect label, .stSlider label {{
+    color: {t["text"]} !important;
+  }}
+  /* Caption and markdown text */
+  .stCaption, .stMarkdown p, .stMarkdown li {{
+    color: {t["text_muted"]} !important;
+  }}
+  /* Dataframe text */
+  .stDataFrame {{ color: {t["text"]} !important; }}
+  /* Expander header */
+  .streamlit-expanderHeader {{ color: {t["text"]} !important; }}
+  /* Info / success / warning / error boxes -- override Streamlit defaults */
+  div[data-testid="stAlert"] p {{ color: {t["text"]} !important; }}
+  /* Sidebar caption */
+  section[data-testid="stSidebar"] .stCaption {{
+    color: {t["sidebar_txt"]} !important; opacity: 0.75;
+  }}
+  /* Form submit button matches regular buttons */
+  .stFormSubmitButton > button {{
+    background: {t["btn_bg"]} !important;
+    color: {t["btn_color"]} !important; border: none !important;
+    border-radius: 8px !important; font-weight: 600 !important;
+  }}
+  /* Tab text */
+  .stTabs [data-baseweb="tab-list"] {{ background: transparent; }}
+  /* Metric widget */
+  [data-testid="stMetricValue"] {{ color: {t["accent"]} !important; }}
+  [data-testid="stMetricLabel"] {{ color: {t["text_muted"]} !important; }}
   .stButton > button {{
     background: {t["btn_bg"]};
-    color: #fff; border: none; border-radius: 8px;
+    color: {t["btn_color"]}; border: none; border-radius: 8px;
     font-family: 'DM Sans', sans-serif; font-weight: 600;
     padding: 0.55rem 1.4rem; transition: opacity .15s;
   }}
