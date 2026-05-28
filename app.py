@@ -313,7 +313,7 @@ if page == "Dashboard":
                  marker_color="#3fb950", opacity=0.55,
                  text=grp["Max"], textposition="outside", textfont_color="#8b949e")
     fig1.update_layout(**PLOT_LAYOUT, barmode="group",
-                       legend=dict(bgcolor="#00000000", font_color="#8b949e"),
+                       legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
                        yaxis_title="Yards", xaxis_title=None, height=380)
     st.plotly_chart(fig1, use_container_width=True)
     st.divider()
@@ -331,7 +331,7 @@ if page == "Dashboard":
                   color="club_used", barmode="group",
                   labels={"shot_shape":"Shot Shape","count":"# of Shots","club_used":"Club"})
     fig2.update_layout(**PLOT_LAYOUT, height=380,
-                       legend=dict(bgcolor="#00000000", font_color="#8b949e"),
+                       legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
                        xaxis_title=None, yaxis_title="Shots")
     st.plotly_chart(fig2, use_container_width=True)
     st.divider()
@@ -364,7 +364,7 @@ if page == "Dashboard":
                      mode="lines+markers", line=dict(color="#3fb950", width=2, dash="dot"),
                      marker=dict(size=6, color="#56d364"), name="Carry")
     fig4.update_layout(**PLOT_LAYOUT, height=320, yaxis_title="Yards", xaxis_title=None,
-                       legend=dict(bgcolor="#00000000", font_color="#8b949e"))
+                       legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
     st.plotly_chart(fig4, use_container_width=True)
 
     with st.expander("Raw Session Data"):
@@ -591,7 +591,7 @@ elif page == "Golf Knowledge":
             **PLOT_LAYOUT, height=340,
             xaxis_title="Face Angle (deg, - = closed, + = open)",
             yaxis_title="Curve (deg, - = draw, + = fade)",
-            legend=dict(bgcolor="#00000000", font_color="#8b949e"),
+            legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
         )
         fig_fp.update_layout(title="Ball Curve by Face & Path Angle")
         fig_fp.update_layout(title_font=dict(color="#8b949e", size=13))
@@ -722,7 +722,7 @@ elif page == "Golf Knowledge":
                          marker_color="#79c0ff", opacity=0.4)
         fig_spin.update_layout(**PLOT_LAYOUT, barmode="overlay", height=360,
                                yaxis_title="Spin Rate (RPM)", xaxis_title=None,
-                               legend=dict(bgcolor="#00000000", font_color="#8b949e"))
+                               legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
         st.plotly_chart(fig_spin, use_container_width=True)
 
         # Magnus force diagram via Plotly
@@ -863,7 +863,7 @@ elif page == "Golf Knowledge":
                                 line=dict(color=color, width=2),
                                 marker=dict(size=7, color=color))
         fig_hcp.update_layout(**PLOT_LAYOUT, height=360, yaxis_title="Carry Distance (yards)",
-                              xaxis_title=None, legend=dict(bgcolor="#00000000", font_color="#8b949e"))
+                              xaxis_title=None, legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
         st.plotly_chart(fig_hcp, use_container_width=True)
 
     # ── TAB 6: Practice Drills ───────────────────────────────────
