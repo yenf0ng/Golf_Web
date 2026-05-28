@@ -25,41 +25,47 @@ st.set_page_config(
 # -- Theme definitions ----------------------------------------
 THEMES = {
     "light": {
-        # Green fairway + parchment beige
-        "bg":          "#f5f0e8",   # warm parchment
-        "bg2":         "#ede8dc",   # slightly darker parchment
-        "sidebar_bg":  "#2d5a27",   # deep fairway green
-        "sidebar_txt": "#f5f0e8",
-        "card_bg":     "#fffdf7",
-        "card_border": "#d4c9a8",
-        "text":        "#1a2e18",   # dark forest
-        "text_muted":  "#6b7c69",
-        "accent":      "#2d7a22",   # fairway green
-        "accent2":     "#8b6914",   # warm gold
-        "heading":     "#1e5c19",
-        "btn_bg":      "linear-gradient(135deg, #2d7a22, #4a9e3f)",
-        "btn_color":   "#ffffff",
-        "badge_on_accent": "#ffffff",
-        "input_bg":    "#fffdf7",
-        "input_border":"#c4b88a",
-        "hr":          "#d4c9a8",
-        "tab_active":  "#2d7a22",
-        "tip_bg":      "#e8f5e5",
-        "tip_border":  "#2d7a22",
-        "tip_color":   "#1e5c19",
-        "plot_paper":  "#f5f0e8",
-        "plot_bg":     "#ede8dc",
-        "plot_font":   "#1a2e18",
-        "plot_grid":   "#c4b88a",
-        "plot_zero":   "#2d7a22",
-        "plot_colors": ["#2d7a22","#8b6914","#c0392b","#1a6b8a","#7d3c98","#d4892a","#2e86c1"],
+        # Option A — Fairway: deep bottle-green sidebar, warm parchment body
+        "bg":          "#f7f2e8",   # warm parchment page bg
+        "bg2":         "#eee9d8",   # slightly darker parchment (chart bg)
+        "sidebar_bg":  "#1e4620",   # deep bottle-green
+        "sidebar_txt": "#d4edcf",   # soft sage white
+        "sidebar_active": "#2d6b30",# active nav item bg
+        "sidebar_muted":  "#8fc98a",# muted nav items
+        "card_bg":     "#fff9ee",   # warm cream cards
+        "card_border": "#c9bc94",   # parchment border
+        "text":        "#2d4a1e",   # dark forest body text
+        "text_muted":  "#5a6e52",   # muted forest green
+        "accent":      "#1e6b22",   # fairway green — buttons, values, links
+        "accent2":     "#8b6914",   # warm golf gold — secondary highlights
+        "heading":     "#1e4620",   # deepest green for headings
+        "btn_bg":      "linear-gradient(135deg, #1e6b22, #2d8a30)",
+        "btn_color":   "#f0f9ee",   # near-white, readable on green
+        "badge_drv":   "#1e4620",   # driver badge text (on accent bg)
+        "input_bg":    "#fff9ee",
+        "input_border":"#b8ab7e",
+        "hr":          "#c9bc94",
+        "tab_active":  "#1e6b22",
+        "tip_bg":      "#eaf5e6",
+        "tip_border":  "#1e6b22",
+        "tip_color":   "#1e4620",
+        # Plotly
+        "plot_paper":  "#f7f2e8",
+        "plot_bg":     "#eee9d8",
+        "plot_font":   "#2d4a1e",
+        "plot_grid":   "#c9bc94",
+        "plot_zero":   "#1e6b22",
+        "plot_colors": ["#1e6b22","#8b6914","#c0392b","#1a5276","#7d3c98","#d68910","#117a65"],
+        "plot_legend": "#2d4a1e",
     },
     "dark": {
-        # Original dark slate theme
+        # Option B — Night round: dark slate with blue + green accents
         "bg":          "#0d1117",
         "bg2":         "#161b22",
         "sidebar_bg":  "#161b22",
         "sidebar_txt": "#e6edf3",
+        "sidebar_active": "#1f6feb22",
+        "sidebar_muted":  "#8b949e",
         "card_bg":     "#161b22",
         "card_border": "#21262d",
         "text":        "#e6edf3",
@@ -69,7 +75,7 @@ THEMES = {
         "heading":     "#58a6ff",
         "btn_bg":      "linear-gradient(135deg, #1f6feb, #388bfd)",
         "btn_color":   "#ffffff",
-        "badge_on_accent": "#ffffff",
+        "badge_drv":   "#ffffff",
         "input_bg":    "#0d1117",
         "input_border":"#30363d",
         "hr":          "#21262d",
@@ -77,12 +83,14 @@ THEMES = {
         "tip_bg":      "#1c2333",
         "tip_border":  "#58a6ff",
         "tip_color":   "#79c0ff",
+        # Plotly
         "plot_paper":  "#161b22",
         "plot_bg":     "#161b22",
         "plot_font":   "#e6edf3",
         "plot_grid":   "#21262d",
         "plot_zero":   "#30363d",
         "plot_colors": ["#58a6ff","#3fb950","#e3b341","#f78166","#bc8cff","#79c0ff","#56d364"],
+        "plot_legend": "#8b949e",
     },
 }
 
@@ -104,20 +112,19 @@ def inject_css(t: dict):
   }}
 
   /* ── Sidebar ── */
-  section[data-testid="stSidebar"] > div {{
+  section[data-testid="stSidebar"] > div:first-child {{
     background-color: {t["sidebar_bg"]} !important;
   }}
-  section[data-testid="stSidebar"],
+  section[data-testid="stSidebar"] *,
   section[data-testid="stSidebar"] p,
   section[data-testid="stSidebar"] span,
   section[data-testid="stSidebar"] label,
-  section[data-testid="stSidebar"] div,
   section[data-testid="stSidebar"] small,
   section[data-testid="stSidebar"] a {{
     color: {t["sidebar_txt"]} !important;
   }}
   section[data-testid="stSidebar"] hr {{
-    border-color: {t["sidebar_txt"]}33 !important;
+    border-color: {t["sidebar_txt"]}40 !important;
   }}
 
   /* ── Headings ── */
@@ -129,30 +136,22 @@ def inject_css(t: dict):
   h2 {{ font-size: 1.9rem !important; color: {t["heading"]} !important; }}
   h3 {{ font-size: 1.4rem !important; color: {t["heading"]} !important; }}
 
-  /* ── Global text nodes ── */
-  p, span, li, td, th, label, div {{
-    color: {t["text"]};
-  }}
-  small, .stCaption, [data-testid="stCaptionContainer"] {{
+  /* ── Body text ── */
+  p, li, td, th {{ color: {t["text"]}; }}
+  small, .stCaption, [data-testid="stCaptionContainer"] p {{
     color: {t["text_muted"]} !important;
   }}
   a {{ color: {t["accent"]}; }}
-
-  /* ── Markdown ── */
-  .stMarkdown p,
-  .stMarkdown li,
-  .stMarkdown span {{
+  .stMarkdown p, .stMarkdown li, .stMarkdown span {{
     color: {t["text"]} !important;
   }}
 
-  /* ── Custom cards ── */
+  /* ── Metric cards ── */
   .metric-card {{
     background: {t["card_bg"]};
     border: 1px solid {t["card_border"]};
-    border-radius: 12px;
-    padding: 1rem 1.2rem;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border-radius: 12px; padding: 1rem 1.2rem; text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   }}
   .metric-card .label {{
     font-size: 0.72rem; text-transform: uppercase;
@@ -162,86 +161,74 @@ def inject_css(t: dict):
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2.2rem; color: {t["accent"]}; line-height: 1;
   }}
-  .metric-card .sub {{
-    font-size: 0.75rem; color: {t["text_muted"]}; margin-top: 0.2rem;
-  }}
+  .metric-card .sub {{ font-size: 0.75rem; color: {t["text_muted"]}; margin-top: 0.2rem; }}
 
   /* ── Badges ── */
   .badge {{
     display: inline-block; padding: 2px 10px; border-radius: 20px;
     font-size: 0.72rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
   }}
-  .badge-Driver  {{ background:{t["accent"]};   color:{t["sidebar_txt"]}; }}
+  .badge-Driver  {{ background:{t["accent"]}; color:{t["btn_color"]}; }}
   .badge-Irons   {{ background:transparent; color:{t["accent"]};  border:2px solid {t["accent"]}; }}
   .badge-Woods   {{ background:transparent; color:{t["accent2"]}; border:2px solid {t["accent2"]}; }}
   .badge-Putting {{ background:transparent; color:{t["accent2"]}; border:2px solid {t["accent2"]}; }}
 
-  /* ── Media / know cards ── */
-  .media-wrapper, .know-card {{
-    background: {t["card_bg"]};
-    border: 1px solid {t["card_border"]};
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 1rem;
+  /* ── Media cards ── */
+  .media-wrapper {{
+    background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
+    border-radius: 12px; overflow: hidden; margin-bottom: 1rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   }}
-  .media-title {{
-    padding: 0.5rem 0.8rem 0.1rem;
-    font-size: 0.95rem; font-weight: 600; color: {t["text"]};
-  }}
-  .media-meta {{
-    padding: 0.35rem 0.8rem 0.6rem;
-    font-size: 0.78rem; color: {t["text_muted"]};
-  }}
+  .media-title {{ padding: 0.5rem 0.8rem 0.1rem; font-size: 0.95rem; font-weight: 600; color: {t["text"]}; }}
+  .media-meta   {{ padding: 0.35rem 0.8rem 0.6rem; font-size: 0.78rem; color: {t["text_muted"]}; }}
   .media-meta strong {{ color: {t["text"]}; }}
-  .know-card {{ padding: 1.2rem 1.4rem; overflow: visible; }}
+
+  /* ── Knowledge cards ── */
+  .know-card {{
+    background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
+    border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  }}
   .know-card h4 {{
     font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem;
     letter-spacing: 1.5px; color: {t["heading"]} !important; margin-bottom: 0.4rem;
   }}
   .know-card p {{ font-size: 0.88rem; color: {t["text"]}; line-height: 1.65; margin: 0; }}
 
-  /* ── Level pills ── */
+  /* ── Level pills (fixed colors — readable on both themes) ── */
   .level-pill {{
     display: inline-block; padding: 1px 9px; border-radius: 20px;
     font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
     letter-spacing: 1px; margin-left: 8px; vertical-align: middle;
   }}
-  .level-beginner     {{ background:#2ea04318; color:#1e6b14; border:1px solid #2ea043; }}
-  .level-intermediate {{ background:#d2992218; color:#7a5800; border:1px solid #d29922; }}
-  .level-advanced     {{ background:#6e40c918; color:#5a2d91; border:1px solid #6e40c9; }}
+  .level-beginner     {{ background:#d4edcf; color:#1e4620; border:1px solid #1e6b22; }}
+  .level-intermediate {{ background:#fdebd0; color:#7a5800; border:1px solid #d68910; }}
+  .level-advanced     {{ background:#ede0ff; color:#4a1e91; border:1px solid #6e40c9; }}
 
   /* ── Tip box ── */
   .tip-box {{
-    background: {t["tip_bg"]};
-    border-left: 3px solid {t["tip_border"]};
-    border-radius: 0 8px 8px 0;
-    padding: 0.7rem 1rem; margin-top: 0.7rem;
+    background: {t["tip_bg"]}; border-left: 3px solid {t["tip_border"]};
+    border-radius: 0 8px 8px 0; padding: 0.7rem 1rem; margin-top: 0.7rem;
     font-size: 0.84rem; color: {t["tip_color"]};
   }}
 
   /* ── Tabs ── */
-  .stTabs [data-baseweb="tab-list"] {{
-    background: transparent !important;
-    gap: 4px;
-  }}
+  .stTabs [data-baseweb="tab-list"] {{ background: transparent !important; gap: 4px; }}
   .stTabs [role="tab"] {{
     font-family: 'Bebas Neue', sans-serif !important;
     font-size: 1.05rem; letter-spacing: 1.5px;
-    color: {t["text_muted"]} !important;
-    background: transparent !important;
+    color: {t["text_muted"]} !important; background: transparent !important;
   }}
   .stTabs [aria-selected="true"] {{
     color: {t["tab_active"]} !important;
     border-bottom: 2px solid {t["tab_active"]} !important;
   }}
 
-  /* ── Form inputs ── */
+  /* ── Inputs ── */
   input, textarea, select,
   [data-baseweb="input"] input,
-  [data-baseweb="textarea"] textarea,
-  [data-baseweb="select"] div {{
+  [data-baseweb="textarea"] textarea {{
     background-color: {t["input_bg"]} !important;
     border-color: {t["input_border"]} !important;
     color: {t["text"]} !important;
@@ -254,14 +241,10 @@ def inject_css(t: dict):
     border-color: {t["input_border"]} !important;
     border-radius: 8px !important;
   }}
-  /* Placeholder text */
   input::placeholder, textarea::placeholder {{
-    color: {t["text_muted"]} !important;
-    opacity: 0.7;
+    color: {t["text_muted"]} !important; opacity: 0.7;
   }}
-  /* Dropdown options */
-  [data-baseweb="popover"] li,
-  [data-baseweb="menu"] li {{
+  [data-baseweb="popover"] li, [data-baseweb="menu"] li {{
     background-color: {t["card_bg"]} !important;
     color: {t["text"]} !important;
   }}
@@ -269,66 +252,47 @@ def inject_css(t: dict):
     background-color: {t["accent"]}22 !important;
   }}
 
-  /* ── Buttons — ALL variants ── */
+  /* ── Buttons ── */
   .stButton > button,
-  .stFormSubmitButton > button,
-  button[kind="primary"],
-  button[kind="secondary"] {{
+  .stFormSubmitButton > button {{
     background: {t["btn_bg"]} !important;
     color: {t["btn_color"]} !important;
-    border: none !important;
-    border-radius: 8px !important;
+    border: none !important; border-radius: 8px !important;
     font-family: 'DM Sans', sans-serif !important;
-    font-weight: 600 !important;
-    padding: 0.55rem 1.4rem !important;
+    font-weight: 600 !important; padding: 0.55rem 1.4rem !important;
     transition: opacity .15s !important;
   }}
   .stButton > button:hover,
   .stFormSubmitButton > button:hover {{
-    opacity: 0.85 !important;
-    color: {t["btn_color"]} !important;
+    opacity: 0.85 !important; color: {t["btn_color"]} !important;
   }}
 
-  /* ── Alerts / info boxes ── */
-  [data-testid="stAlert"],
+  /* ── Alerts ── */
   [data-testid="stAlert"] p,
-  [data-testid="stAlert"] span {{
-    color: {t["text"]} !important;
-  }}
+  [data-testid="stAlert"] span {{ color: {t["text"]} !important; }}
 
   /* ── Expander ── */
-  [data-testid="stExpander"] summary,
-  [data-testid="stExpander"] summary p,
-  .streamlit-expanderHeader p {{
-    color: {t["text"]} !important;
-    font-weight: 600;
-  }}
   [data-testid="stExpander"] {{
     background: {t["card_bg"]} !important;
     border: 1px solid {t["card_border"]} !important;
     border-radius: 10px !important;
   }}
+  [data-testid="stExpander"] summary p,
+  .streamlit-expanderHeader p {{ color: {t["text"]} !important; font-weight: 600; }}
 
   /* ── Dataframe ── */
-  [data-testid="stDataFrame"] *,
-  .stDataFrame * {{
-    color: {t["text"]} !important;
-  }}
+  [data-testid="stDataFrame"] * {{ color: {t["text"]} !important; }}
   [data-testid="stDataFrame"] th {{
-    background: {t["card_border"]} !important;
-    color: {t["text"]} !important;
+    background: {t["card_border"]} !important; color: {t["text"]} !important;
   }}
 
   /* ── Radio / checkbox ── */
   [data-testid="stRadio"] label p,
-  [data-testid="stCheckbox"] label p {{
-    color: {t["text"]} !important;
-  }}
+  [data-testid="stCheckbox"] label p {{ color: {t["text"]} !important; }}
 
   /* ── Multiselect tags ── */
   [data-baseweb="tag"] {{
-    background-color: {t["accent"]}22 !important;
-    color: {t["accent"]} !important;
+    background-color: {t["accent"]}22 !important; color: {t["accent"]} !important;
   }}
   [data-baseweb="tag"] span {{ color: {t["accent"]} !important; }}
 
@@ -342,6 +306,26 @@ def inject_css(t: dict):
   }}
 </style>
 """, unsafe_allow_html=True)
+
+# -- Plotly theme (built dynamically per render) --------------
+def get_plot_layout():
+    t = get_theme()
+    return dict(
+        paper_bgcolor=t["plot_paper"],
+        plot_bgcolor=t["plot_bg"],
+        font_color=t["plot_font"],
+        font_family="DM Sans",
+        colorway=t["plot_colors"],
+        margin=dict(l=16, r=16, t=40, b=16),
+        legend=dict(
+            bgcolor="rgba(0,0,0,0)",
+            font=dict(color=t["plot_legend"]),
+        ),
+    )
+
+def get_axis_style():
+    t = get_theme()
+    return dict(gridcolor=t["plot_grid"], zerolinecolor=t["plot_zero"])
 
 # -- Supabase client ------------------------------------------
 @st.cache_resource
@@ -536,7 +520,6 @@ if page == "Dashboard":
                  marker_color="#3fb950", opacity=0.55,
                  text=grp["Max"], textposition="outside", textfont_color="#8b949e")
     fig1.update_layout(**get_plot_layout(), barmode="group",
-                       legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
                        yaxis_title="Yards", xaxis_title=None, height=380)
     fig1.update_xaxes(**get_axis_style())
     fig1.update_yaxes(**get_axis_style())
@@ -556,7 +539,6 @@ if page == "Dashboard":
                   color="club_used", barmode="group",
                   labels={"shot_shape":"Shot Shape","count":"# of Shots","club_used":"Club"})
     fig2.update_layout(**get_plot_layout(), height=380,
-                       legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
                        xaxis_title=None, yaxis_title="Shots")
     fig2.update_xaxes(**get_axis_style())
     fig2.update_yaxes(**get_axis_style())
@@ -592,8 +574,7 @@ if page == "Dashboard":
     fig4.add_scatter(x=trend_df["session_date"], y=trend_df["carry_distance"],
                      mode="lines+markers", line=dict(color="#3fb950", width=2, dash="dot"),
                      marker=dict(size=6, color="#56d364"), name="Carry")
-    fig4.update_layout(**get_plot_layout(), height=320, yaxis_title="Yards", xaxis_title=None,
-                       legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
+    fig4.update_layout(**get_plot_layout(), height=320, yaxis_title="Yards", xaxis_title=None,)
     fig4.update_xaxes(**get_axis_style())
     fig4.update_yaxes(**get_axis_style())
     st.plotly_chart(fig4, use_container_width=True)
@@ -822,7 +803,6 @@ elif page == "Golf Knowledge":
             **get_plot_layout(), height=340,
             xaxis_title="Face Angle (deg, - = closed, + = open)",
             yaxis_title="Curve (deg, - = draw, + = fade)",
-            legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"),
         )
         fig_fp.update_layout(title="Ball Curve by Face & Path Angle")
         fig_fp.update_layout(title_font=dict(color="#8b949e", size=13))
@@ -952,8 +932,7 @@ elif page == "Golf Knowledge":
         fig_spin.add_bar(name="Max", x=spin_data["Club"], y=spin_data["Max"],
                          marker_color="#79c0ff", opacity=0.4)
         fig_spin.update_layout(**get_plot_layout(), barmode="overlay", height=360,
-                               yaxis_title="Spin Rate (RPM)", xaxis_title=None,
-                               legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
+                               yaxis_title="Spin Rate (RPM)", xaxis_title=None,)
         fig_spin.update_xaxes(**get_axis_style())
         fig_spin.update_yaxes(**get_axis_style())
         st.plotly_chart(fig_spin, use_container_width=True)
@@ -1097,7 +1076,7 @@ elif page == "Golf Knowledge":
                                 line=dict(color=color, width=2),
                                 marker=dict(size=7, color=color))
         fig_hcp.update_layout(**get_plot_layout(), height=360, yaxis_title="Carry Distance (yards)",
-                              xaxis_title=None, legend=dict(bgcolor="rgba(0,0,0,0)", font_color="#8b949e"))
+                              xaxis_title=None,)
         fig_hcp.update_xaxes(**get_axis_style())
         fig_hcp.update_yaxes(**get_axis_style())
         st.plotly_chart(fig_hcp, use_container_width=True)
