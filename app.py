@@ -592,7 +592,8 @@ elif page == "Golf Knowledge":
             xaxis_title="Face Angle (deg, - = closed, + = open)",
             yaxis_title="Curve (deg, - = draw, + = fade)",
             legend=dict(bgcolor="#00000000", font_color="#8b949e"),
-            title=dict(text="Ball Curve by Face & Path Angle", font_color="#8b949e", font_size=13)
+            title=go.layout.Title(text="Ball Curve by Face & Path Angle",
+                                  font=dict(color="#8b949e", size=13))
         )
         st.plotly_chart(fig_fp, use_container_width=True)
 
@@ -747,8 +748,8 @@ elif page == "Golf Knowledge":
                                font=dict(color="#e3b341", size=11))
         fig_mag.update_layout(**PLOT_LAYOUT, height=300, showlegend=False,
                               xaxis=dict(visible=False), yaxis=dict(visible=False),
-                              title=dict(text="Backspin generates upward Magnus lift",
-                                        font_color="#8b949e", font_size=12))
+                              title=go.layout.Title(text="Backspin generates upward Magnus lift",
+                                                    font=dict(color="#8b949e", size=12)))
         st.plotly_chart(fig_mag, use_container_width=True)
 
     # ── TAB 4: Swing Mechanics ───────────────────────────────────
