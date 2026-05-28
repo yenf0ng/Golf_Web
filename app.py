@@ -35,10 +35,10 @@ THEMES = {
         "card_bg":     "#fff9ee",   # warm cream cards
         "card_border": "#c9bc94",   # parchment border
         "text":        "#2d4a1e",   # dark forest body text
-        "text_muted":  "#5a6e52",   # muted forest green
+        "text_muted":  "#3f4d38",   # muted forest green
         "accent":      "#1e6b22",   # fairway green — buttons, values, links
         "accent2":     "#8b6914",   # warm golf gold — secondary highlights
-        "heading":     "#dedede",   # deepest green for headings
+        "heading":     "#707070",   
         "btn_bg":      "linear-gradient(135deg, #1e6b22, #2d8a30)",
         "btn_color":   "#f0f9ee",   # near-white, readable on green
         "badge_drv":   "#1e4620",   # driver badge text (on accent bg)
@@ -153,16 +153,28 @@ def inject_css(t: dict):
     border-color: {t["sidebar_txt"]}40 !important;
   }}
 
-  /* ── Headings ── */
-  h1, h2, h3, h4 {{
+/* ── Headings (Fixed Visibility) ── */
+  h1, h2, h3, h4,
+  [data-testid="stMarkdownContainer"] h1,
+  [data-testid="stMarkdownContainer"] h2,
+  [data-testid="stMarkdownContainer"] h3,
+  [data-testid="stMarkdownContainer"] h4 {{
     font-family: 'Bebas Neue', sans-serif !important;
     letter-spacing: 2px;
+    color: {t["heading"]} !important;
   }}
-  h1 {{ font-size: 2.6rem !important; color: {t["heading"]} !important; }}
-  h2 {{ font-size: 1.9rem !important; color: {t["heading"]} !important; }}
-  h3 {{ font-size: 1.4rem !important; color: {t["heading"]} !important; }}
-  h4 {{ font-size: 1.2rem !important; color: {t["heading"]} !important; margin-bottom: 1rem; }}
-  
+  [data-testid="stMarkdownContainer"] h1 {{ font-size: 2.6rem !important; }}
+  [data-testid="stMarkdownContainer"] h2 {{ font-size: 1.9rem !important; }}
+  [data-testid="stMarkdownContainer"] h3 {{ font-size: 1.4rem !important; }}
+  [data-testid="stMarkdownContainer"] h4 {{ font-size: 1.2rem !important; margin-bottom: 1rem; }}
+
+  /* ── Custom HTML Tables (For Recent Uploads) ── */
+  .custom-table {{ width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 0.5rem; }}
+  .custom-table th {{ border-bottom: 2px solid {t["hr"]}; text-align: left; padding: 10px 8px; color: {t["heading"]}; font-weight: bold; }}
+  .custom-table td {{ border-bottom: 1px solid {t["card_border"]}; padding: 10px 8px; color: {t["text"]}; }}
+  .custom-table a {{ color: {t["accent"]}; text-decoration: none; font-weight: bold; }}
+  .custom-table tr:hover {{ background-color: {t["card_bg"]}; }}
+
   /* ── Custom cards ── */
   .metric-card {{
     background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
@@ -341,22 +353,31 @@ def inject_css(t: dict):
     background-color: {t["card_bg"]} !important; /* Changes the table background */
   }}
 
-  /* ── Radio Buttons (Main Area) ── */
-  [data-testid="stRadio"] [aria-checked="true"] div {{
+/* ── Radio Buttons (Fixed Colors) ── */
+  /* Main text */
+  [data-testid="stRadio"] label p {{ color: {t["text"]} !important; }}
+  
+  /* Outer circle unselected */
+  [data-baseweb="radio"] > div:first-child {{
+    background-color: transparent !important;
+    border: 2px solid {t["text_muted"]} !important;
+  }}
+  
+  /* Outer circle & dot SELECTED */
+  [data-baseweb="radio"] [aria-checked="true"] > div:first-child {{
     background-color: {t["accent"]} !important;
     border-color: {t["accent"]} !important;
   }}
-
-  /* ── File Uploader (Choose File Background) ── */
-  [data-testid="stFileUploaderDropzone"] {{
-    background-color: {t["card_bg"]} !important;
-    border: 2px dashed {t["card_border"]} !important;
-    border-radius: 10px !important;
+  
+  /* Sidebar unselected override */
+  section[data-testid="stSidebar"] [data-baseweb="radio"] > div:first-child {{
+    border: 2px solid {t["sidebar_txt"]}80 !important;
   }}
-  [data-testid="stFileUploaderDropzone"] button {{
-    background: {t["btn_bg"]} !important;
-    color: {t["btn_color"]} !important;
-    border: none !important;
+  
+  /* Sidebar selected override */
+  section[data-testid="stSidebar"] [data-baseweb="radio"] [aria-checked="true"] > div:first-child {{
+    background-color: {t["sidebar_txt"]} !important;
+    border-color: {t["sidebar_txt"]} !important;
   }}
 </style>
 """, unsafe_allow_html=True)
@@ -1333,13 +1354,23 @@ elif page == "Upload Media":
     vdf = fetch_video_vault()
     if not vdf.empty:
         preview = vdf.head(8).copy()
-        preview["clip_date"] = preview["clip_date"].dt.strftime("%d %b %Y")
-        st.dataframe(
-            preview[["clip_date","category","title","notes","public_url"]]
-              .rename(columns={"clip_date":"Date","category":"Category",
-                               "title":"Title","notes":"Notes","public_url":"URL"}),
-            use_container_width=True, hide_index=True,
-            column_config={"URL": st.column_config.LinkColumn("URL")})
+        
+        # Build a beautiful, theme-compliant HTML table
+        html_table = "<table class='custom-table'><thead><tr><th>Date</th><th>Category</th><th>Title</th><th>Notes</th><th>URL</th></tr></thead><tbody>"
+        
+        for _, row in preview.iterrows():
+            # Format the date safely
+            date_str = row["clip_date"].strftime("%d %b %Y") if pd.notna(row["clip_date"]) else "-"
+            title = row.get("title", "") or ""
+            notes = row.get("notes", "") or "None"
+            url = row.get("public_url", "")
+            
+            html_table += f"<tr><td>{date_str}</td><td>{row['category']}</td><td>{title}</td><td>{notes}</td><td><a href='{url}' target='_blank'>View Media</a></td></tr>"
+            
+        html_table += "</tbody></table>"
+        
+        # Render the custom table
+        st.markdown(html_table, unsafe_allow_html=True)
     else:
         st.info("No media uploaded yet.")
         
