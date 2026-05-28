@@ -654,11 +654,12 @@ elif page == "Golf Knowledge":
             "Shape":  ["Straight","Draw","Fade","Hook","Slice","Push","Pull"],
             "LR_Curve": [0, -12, 12, -28, 28, 2, -2],
             "Height": [5, 4, 6, 3, 5, 4, 5],
-            "Distance_Loss": [0, -2, 5, 10, 25, 3, 3],
+            "Distance_Loss": [2, 1, 5, 10, 25, 3, 3],  # all >= 1 so bubble always visible
         })
         fig_sh = px.scatter(
             shapes_plot, x="LR_Curve", y="Height",
             size="Distance_Loss", color="Shape",
+        size_min=6,
             text="Shape", size_max=30,
             labels={"LR_Curve":"Left (-) / Right (+) Curve (approx yds at 150y)",
                     "Height":"Relative Trajectory Height"},
