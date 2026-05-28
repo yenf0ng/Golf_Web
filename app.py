@@ -592,9 +592,9 @@ elif page == "Golf Knowledge":
             xaxis_title="Face Angle (deg, - = closed, + = open)",
             yaxis_title="Curve (deg, - = draw, + = fade)",
             legend=dict(bgcolor="#00000000", font_color="#8b949e"),
-            title=go.layout.Title(text="Ball Curve by Face & Path Angle",
-                                  font=dict(color="#8b949e", size=13))
         )
+        fig_fp.update_layout(title="Ball Curve by Face & Path Angle")
+        fig_fp.update_layout(title_font=dict(color="#8b949e", size=13))
         st.plotly_chart(fig_fp, use_container_width=True)
 
     # ── TAB 2: Shot Shapes ───────────────────────────────────────
@@ -746,10 +746,12 @@ elif page == "Golf Knowledge":
                                arrowhead=2, arrowsize=1.5, arrowwidth=2,
                                arrowcolor="#e3b341", text="Lift (Magnus Force)",
                                font=dict(color="#e3b341", size=11))
-        fig_mag.update_layout(**PLOT_LAYOUT, height=300, showlegend=False,
-                              xaxis=dict(visible=False), yaxis=dict(visible=False),
-                              title=go.layout.Title(text="Backspin generates upward Magnus lift",
-                                                    font=dict(color="#8b949e", size=12)))
+        fig_mag.update_layout(
+            **PLOT_LAYOUT, height=300, showlegend=False,
+            xaxis=dict(visible=False), yaxis=dict(visible=False),
+        )
+        fig_mag.update_layout(title="Backspin generates upward Magnus lift")
+        fig_mag.update_layout(title_font=dict(color="#8b949e", size=12))
         st.plotly_chart(fig_mag, use_container_width=True)
 
     # ── TAB 4: Swing Mechanics ───────────────────────────────────
