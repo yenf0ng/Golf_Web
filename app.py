@@ -665,10 +665,8 @@ elif page == "Golf Knowledge":
         )
         fig_sh.update_traces(textposition="top center")
         fig_sh.add_vline(x=0, line_color="#30363d", line_dash="dot")
-        fig_sh.update_layout(
-            **PLOT_LAYOUT, height=420, showlegend=False,
-            xaxis=dict(gridcolor="#21262d", zerolinecolor="#58a6ff", zeroline=True),
-        )
+        fig_sh.update_layout(**PLOT_LAYOUT, height=420, showlegend=False)
+        fig_sh.update_xaxes(zerolinecolor="#58a6ff", zeroline=True)
         st.plotly_chart(fig_sh, use_container_width=True)
         st.caption("Bubble size = relative distance loss vs straight shot")
 
