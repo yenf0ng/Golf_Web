@@ -464,16 +464,13 @@ def media_type_label(ext: str) -> str:
     if ext in GIF_EXTS:   return "GIF"
     return "Image"
 
-def render_media(url: str, ext: str):
+def get_media_html(url: str, ext: str) -> str:
     if ext in VIDEO_EXTS:
-        try:
-            st.video(url)
-        except Exception:
-            st.markdown(f'<a href="{url}" target="_blank">Open video</a>', unsafe_allow_html=True)
+        # Use native HTML5 video player
+        return f'<video controls style="width:100%; height:100%; max-height:280px; object-fit:contain; background:#000;"><source src="{url}" type="video/{ext}"></video>'
     else:
-        st.markdown(
-            f'<img src="{url}" style="width:100%; max-height:280px; object-fit:contain; border-radius:6px; display:block;" alt="media">',
-            unsafe_allow_html=True)
+        # Use native HTML image
+        return f'<img src="{url}" style="width:100%; height:100%; max-height:280px; object-fit:contain; display:block;" alt="media">'
 
 # =============================================================
 #  SIDEBAR
@@ -782,6 +779,10 @@ elif page == "Media Vault":
             notes_str = clip.get("notes","") or "No notes"
             ext       = clip["ext"]
             with col:
+                # 1. Get the media HTML string
+                media_html = get_media_html(clip["public_url"], ext)
+                
+                # 2. Put EVERYTHING inside a single st.markdown call
                 st.markdown(f"""
                 <div class="media-wrapper">
                   <div style="padding:0.6rem 0.8rem 0.2rem;display:flex;gap:6px;align-items:center;">
@@ -790,14 +791,11 @@ elif page == "Media Vault":
                   </div>
                   {'<div class="media-title">' + title_str + '</div>' if title_str else ''}
                   <div class="media-asset-container">
-                """, unsafe_allow_html=True)
-                
-                render_media(clip["public_url"], ext)
-                
-                st.markdown(f"""
+                    {media_html}
                   </div>
                   <div class="media-meta"><strong>{date_str}</strong><br>{notes_str}</div>
-                </div>""", unsafe_allow_html=True)
+                </div>
+                """, unsafe_allow_html=True)
 
                 if st.session_state.is_admin:
                     btn_col1, btn_col2 = st.columns(2)
