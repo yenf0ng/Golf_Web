@@ -203,23 +203,23 @@ def inject_css(t: dict):
   .badge-Putting {{ background:transparent; color:{t["accent2"]}; border:2px solid {t["accent2"]}; }}
 
 /* ── Media cards ── */
-  .media-wrapper {
+  .media-wrapper {{
     background: {t["card_bg"]}; border: 1px solid {t["card_border"]};
     border-radius: 12px; overflow: hidden; margin-bottom: 1rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     display: flex;
     flex-direction: column;
-  }
-  .media-title { padding: 0.5rem 0.8rem 0.1rem; font-size: 0.95rem; font-weight: 600; color: {t["text"]}; }
-  .media-meta   { padding: 0.35rem 0.8rem 0.6rem; font-size: 0.78rem; color: {t["text_muted"]}; }
-  .media-meta strong { color: {t["text"]}; }
+  }}
+  .media-title {{ padding: 0.5rem 0.8rem 0.1rem; font-size: 0.95rem; font-weight: 600; color: {t["text"]}; }}
+  .media-meta   {{ padding: 0.35rem 0.8rem 0.6rem; font-size: 0.78rem; color: {t["text_muted"]}; }}
+  .media-meta strong {{ color: {t["text"]}; }}
 
-/* Desktop ONLY: Fixed size brackets/boxes */
-  @media (min-width: 768px) {
-    .media-wrapper {
+  /* Desktop ONLY: Fixed size brackets/boxes */
+  @media (min-width: 768px) {{
+    .media-wrapper {{
       height: 460px; /* Fixed total height for the card */
-    }
-    .media-asset-container {
+    }}
+    .media-asset-container {{
       height: 280px; /* Fixed height for the video/image area */
       overflow: hidden;
       display: flex;
@@ -227,12 +227,12 @@ def inject_css(t: dict):
       justify-content: center;
       background: rgba(0,0,0,0.02);
       margin-top: 0.5rem;
-    }
-    .media-meta {
+    }}
+    .media-meta {{
       overflow-y: auto; /* Adds a scrollbar ONLY if notes are very long */
       flex-grow: 1;
-    }
-  }
+    }}
+  }}
 
   /* ── Knowledge cards ── */
   .know-card {{
