@@ -516,6 +516,7 @@ with st.sidebar:
         st.session_state.dark_theme = not st.session_state.dark_theme
         st.rerun()
     st.caption("Built with Streamlit + Supabase")
+    st.caption("Credit: https://github.com/yenf0ng/Golf_Web")
 
 # =============================================================
 #  CONSTANTS & DATA HELPERS
